@@ -6,7 +6,7 @@ from spacy.util import run_command
 from .training.train import TrainingManager
 from .manager import COMMON_MODELS_PACKAGE_NAMEPART
 
-DOWNLOAD_URL = "https://github.com/explosion-ai/coreferee/raw/master/models"
+DOWNLOAD_URL = "https://github.com/explosion/coreferee/raw/master/models"
 
 parser = argparse.ArgumentParser()
 subparsers = parser.add_subparsers(dest="command")

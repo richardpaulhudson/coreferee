@@ -233,7 +233,7 @@ With unlimited training data, it would be possible to train a system to employ a
 
 - Especially with limited training data but probably even with the largest available training datasets, it is unlikely that a system will learn more than the very simplest tendencies for strategy 3). However, making word vectors available to neural networks ensures that Coreferee can make use of whatever tendencies are discernable.
 
-Coreferee started life to assist the [Holmes](https://github.com/explosion-ai/holmes-extractor) project, which is used for information extraction and intelligent search. Coreferee is in no way dependent on Holmes, but this original aim has led to several design decisions that may seem somewhat atypical. Several of them could easily be altered by someone with a requirement to do so:
+Coreferee started life to assist the [Holmes](https://github.com/explosion/holmes-extractor) project, which is used for information extraction and intelligent search. Coreferee is in no way dependent on Holmes, but this original aim has led to several design decisions that may seem somewhat atypical. Several of them could easily be altered by someone with a requirement to do so:
 
 - A mention within Coreferee does not consist of a span, but rather of a single token or of a list of tokens that stand in a coordination relationship to one another.
 
@@ -493,7 +493,7 @@ Perhaps somewhat unusually, when a vector is required to represent a coordinated
 
 The structure shared by each of the five networks in the ensemble is shown in the attached diagram:
 
-![Structure of an ensemble member](https://github.com/explosion-ai/coreferee/blob/master/docs/nn_structure.png)
+![Structure of an ensemble member](https://github.com/explosion/coreferee/blob/master/docs/nn_structure.png)
 
 Cross-linguistically, four training epochs were found to offer the best results; adding more training epochs caused the accuracy to start to tail off again owing to overfitting. Training for all relevant spaCy models for a given language takes between one and two hours on a high-end laptop.
 
