@@ -1,6 +1,7 @@
 name: Coreferee Matrix Test
 on: 
   workflow_dispatch:
+  push:
 
 jobs:
   test-coreferee:
