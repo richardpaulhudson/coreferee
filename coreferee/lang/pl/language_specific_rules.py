@@ -94,7 +94,11 @@ class LanguageSpecificRulesAnalyzer(RulesAnalyzer):
                 and child.pos_ in self.noun_pos
                 and self.has_morph(child, "Case", "Ins")
                 and len(
-                    [1 for c in child.children if c.dep_ == "case" and c.lemma_.lower() == "z"]
+                    [
+                        1
+                        for c in child.children
+                        if c.dep_ == "case" and c.lemma_.lower() == "z"
+                    ]
                 )
                 > 0
                 and child not in visited_set

@@ -80,7 +80,11 @@ class TrainingManager:
                     config_entry["from_version"],
                     config_entry["to_version"],
                 ):
-                    print("Skipping config entry", config_entry_name, "as specified version range does not match.")
+                    print(
+                        "Skipping config entry",
+                        config_entry_name,
+                        "as specified version range does not match.",
+                    )
                     continue
                 if "vectors_model" in config_entry:
                     vectors_model_name = "_".join((lang, config_entry["vectors_model"]))
@@ -317,8 +321,13 @@ class TrainingManager:
         self.writeln(
             temp_log_file, "Spacy model: ", nlp_name, " version ", nlp.meta["version"]
         )
-        if self.train_not_check and config_entry["train_version"] != nlp.meta["version"]:
-            raise ModelNotSupportedError("Declared train_version does not match loaded spaCy version")
+        if (
+            self.train_not_check
+            and config_entry["train_version"] != nlp.meta["version"]
+        ):
+            raise ModelNotSupportedError(
+                "Declared train_version does not match loaded spaCy version"
+            )
         if "vectors_model" in config_entry:
             vectors_nlp_name = "_".join((self.lang, config_entry["vectors_model"]))
             vectors_nlp = self.nlp_dict[vectors_nlp_name]

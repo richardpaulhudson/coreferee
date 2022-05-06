@@ -9,6 +9,7 @@ try:
 except ModelNotSupportedError:
     raise unittest.SkipTest("Model version not supported.")
 
+
 class FrenchRulesTest(unittest.TestCase):
     def setUp(self):
 
@@ -274,7 +275,9 @@ class FrenchRulesTest(unittest.TestCase):
 
     def test_location_proadverbs(self):
         self.compare_potential_anaphor(
-            "Je suis ici. Tu es là. Nous venons de là-bas.", [2, 6], excluded_nlps=['core_news_sm']
+            "Je suis ici. Tu es là. Nous venons de là-bas.",
+            [2, 6],
+            excluded_nlps=["core_news_sm"],
         )
 
     def test_explicit_anaphor(self):
@@ -321,7 +324,9 @@ class FrenchRulesTest(unittest.TestCase):
 
     def test_possessive_determiners(self):
         self.compare_potential_anaphor(
-            "Ma maison, ta maison, sa maison, leur maison.", [6, 9], excluded_nlps=['core_news_sm']
+            "Ma maison, ta maison, sa maison, leur maison.",
+            [6, 9],
+            excluded_nlps=["core_news_sm"],
         )
 
     """
@@ -468,7 +473,7 @@ class FrenchRulesTest(unittest.TestCase):
         self.compare_potential_pair("Je voyais un homme. Elle courait", 3, False, 5, 0)
 
     def test_potential_pair_trivial_plural(self):
-       self.compare_potential_pair(
+        self.compare_potential_pair(
             "Il y avait un homme et une femme. Ils couraient",
             4,
             True,
@@ -476,7 +481,7 @@ class FrenchRulesTest(unittest.TestCase):
             2,
             excluded_nlps=["core_news_sm"],
         )
- 
+
     def test_potential_pair_trivial_plural_control(self):
         self.compare_potential_pair("Il y avait un homme. Ils couraient", 4, True, 6, 0)
 
@@ -726,7 +731,14 @@ class FrenchRulesTest(unittest.TestCase):
         self.compare_potential_pair("Je voyais Gérard. Ils dormaient", 2, False, 4, 0)
 
     def test_potential_pair_female_name(self):
-        self.compare_potential_pair("Je voyais Julie. Elle dormait", 2, False, 4, 2, excluded_nlps=["core_news_sm"])
+        self.compare_potential_pair(
+            "Je voyais Julie. Elle dormait",
+            2,
+            False,
+            4,
+            2,
+            excluded_nlps=["core_news_sm"],
+        )
 
     def test_potential_pair_female_name_control_1(self):
         self.compare_potential_pair("Je voyais Julie. Il dormait", 2, False, 4, 0)
@@ -777,7 +789,14 @@ class FrenchRulesTest(unittest.TestCase):
         )
 
     def test_potential_pair_fem_acc_anaphor_control_2(self):
-        self.compare_potential_pair("Je voyais une maison. Je le vois", 3, False, 6, 0, excluded_nlps=["core_news_sm"])
+        self.compare_potential_pair(
+            "Je voyais une maison. Je le vois",
+            3,
+            False,
+            6,
+            0,
+            excluded_nlps=["core_news_sm"],
+        )
 
     def test_potential_pair_fem_acc_anaphor_3(self):
         self.compare_potential_pair("Je voyais une femme. Je l'ai vue", 3, False, 6, 2)

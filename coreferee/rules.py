@@ -345,10 +345,9 @@ class RulesAnalyzer(ABC):
             return True
 
         # Definite noun phrases with additional children, e.g. 'the man who ...'
-        if (
-            self.is_potentially_definite(token)
-            and self.has_non_determiner_non_conjunction_children(token)
-        ):
+        if self.is_potentially_definite(
+            token
+        ) and self.has_non_determiner_non_conjunction_children(token):
             return True
 
         return (
@@ -361,10 +360,9 @@ class RulesAnalyzer(ABC):
 
     def is_potentially_referring_back_noun(self, token: Token) -> bool:
 
-        if (
-            self.is_potentially_definite(token)
-            and not self.has_non_determiner_non_conjunction_children(token)
-        ):
+        if self.is_potentially_definite(
+            token
+        ) and not self.has_non_determiner_non_conjunction_children(token):
             return True
 
         return (

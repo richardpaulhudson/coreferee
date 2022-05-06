@@ -3,12 +3,15 @@ from coreferee.rules import RulesAnalyzerFactory
 from coreferee.test_utils import get_nlps
 from coreferee.data_model import Mention
 
-nlps = get_nlps('de')
+nlps = get_nlps("de")
 train_version_mismatch = False
 for nlp in nlps:
     if not nlp.meta["matches_train_version"]:
         train_version_mismatch = True
-train_version_mismatch_message = "Loaded model version does not match train model version"
+train_version_mismatch_message = (
+    "Loaded model version does not match train model version"
+)
+
 
 class GermanRulesTest(unittest.TestCase):
     def setUp(self):
@@ -267,7 +270,9 @@ class GermanRulesTest(unittest.TestCase):
         )
 
     def test_prepositions_1(self):
-        self.compare_potential_anaphor("Sie aß es damit.", [0, 2, 3], excluded_nlps=['core_news_md'])
+        self.compare_potential_anaphor(
+            "Sie aß es damit.", [0, 2, 3], excluded_nlps=["core_news_md"]
+        )
 
     def test_prepositions_2(self):
         self.compare_potential_anaphor("Und damit aß sie es.", [1, 3, 4])
@@ -280,7 +285,9 @@ class GermanRulesTest(unittest.TestCase):
 
     def test_prepositions_control_with_verb_phrase(self):
         self.compare_potential_anaphor(
-            "Sie aß es damit, dass sie ein Messer benutzte.", [0, 2, 6], excluded_nlps=['core_news_md']
+            "Sie aß es damit, dass sie ein Messer benutzte.",
+            [0, 2, 6],
+            excluded_nlps=["core_news_md"],
         )
 
     def test_initial_prepositions(self):
@@ -768,7 +775,12 @@ class GermanRulesTest(unittest.TestCase):
 
     def test_potential_pair_female_name_control_2(self):
         self.compare_potential_pair(
-            "Ich sah Petra. Dieses stand", 2, False, 4, 0, excluded_nlps=["core_news_sm"]
+            "Ich sah Petra. Dieses stand",
+            2,
+            False,
+            4,
+            0,
+            excluded_nlps=["core_news_sm"],
         )
 
     def test_potential_pair_female_name_control_3(self):
@@ -975,7 +987,9 @@ class GermanRulesTest(unittest.TestCase):
         self.compare_potential_pair("Peter war da. Er sagte, alles OK.", 0, False, 4, 2)
 
     def test_potential_pair_neuter_subject_personal_verb_control_2(self):
-        self.compare_potential_pair("Petra war da. Sie sagte, alles OK.", 0, False, 4, 2)
+        self.compare_potential_pair(
+            "Petra war da. Sie sagte, alles OK.", 0, False, 4, 2
+        )
 
     def test_potential_pair_neuter_subject_personal_verb_control_3(self):
         self.compare_potential_pair(
@@ -997,7 +1011,12 @@ class GermanRulesTest(unittest.TestCase):
 
     def test_potential_pair_sie_gender_not_marked(self):
         self.compare_potential_pair(
-            "Es gab Hunde. Jemand verkaufte sie.", 2, False, 6, 2, excluded_nlps=["core_news_sm"]
+            "Es gab Hunde. Jemand verkaufte sie.",
+            2,
+            False,
+            6,
+            2,
+            excluded_nlps=["core_news_sm"],
         )
 
     def test_potential_pair_antecedent_in_prepositional_phrase_in_question(self):
@@ -1268,7 +1287,7 @@ class GermanRulesTest(unittest.TestCase):
             0,
             True,
             False,
-            excluded_nlps=["core_news_md", "core_news_sm"]
+            excluded_nlps=["core_news_md", "core_news_sm"],
         )
 
     def test_reflexive_double_coordination_with_preposition(self):

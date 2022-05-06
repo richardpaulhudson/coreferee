@@ -9,12 +9,15 @@ from thinc.backends import get_current_ops
 
 ops = get_current_ops()
 
-nlps = get_nlps('en')
+nlps = get_nlps("en")
 train_version_mismatch = False
 for nlp in nlps:
     if not nlp.meta["matches_train_version"]:
         train_version_mismatch = True
-train_version_mismatch_message = "Loaded model version does not match train model version"
+train_version_mismatch_message = (
+    "Loaded model version does not match train model version"
+)
+
 
 @pytest.fixture
 def setup_simple_example():
@@ -64,6 +67,7 @@ def setup_training_doc_with_spanned():
     doc[10]._.coref_chains.temp_potential_referreds[1].spanned_in_training = True
     doc[10]._.coref_chains.temp_potential_referreds[2].true_in_training = True
     return DocumentPairInfo.from_doc(doc, tendencies_analyzer, 5, is_train=True)
+
 
 @pytest.mark.skipif(train_version_mismatch, reason=train_version_mismatch_message)
 def test_dpi_normal(setup_simple_example):

@@ -1,4 +1,4 @@
-# Copyright (C) 2021 Valentin-Gabriel Soumah, 2021 msg systems ag, 
+# Copyright (C) 2021 Valentin-Gabriel Soumah, 2021 msg systems ag,
 # 2021-2022 ExplosionAI GmbH
 
 from typing import List, Set, Tuple, Optional, cast
@@ -265,12 +265,12 @@ class LanguageSpecificRulesAnalyzer(RulesAnalyzer):
         ):
             return True
         if (
-            token.pos_ == "DET" 
+            token.pos_ == "DET"
             and token.dep_ == "obj"
             and token.i < len(token.doc) - 1
             and token.head.i == token.i + 1
         ):
-        # Covers cases of clitic pronouns wrongly tagged as DET
+            # Covers cases of clitic pronouns wrongly tagged as DET
             return True
         if not (
             (

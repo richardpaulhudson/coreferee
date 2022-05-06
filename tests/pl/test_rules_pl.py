@@ -89,8 +89,12 @@ class PolishRulesTest(unittest.TestCase):
 
     def test_get_dependent_sibling_info_two_member_conjunction_phrase_with(self):
         self.compare_get_dependent_sibling_info(
-            "Richard z synem poszli do domu", 0, "[synem]", None, False,
-            excluded_nlps=["core_news_sm"]
+            "Richard z synem poszli do domu",
+            0,
+            "[synem]",
+            None,
+            False,
+            excluded_nlps=["core_news_sm"],
         )
 
     def test_get_dependent_sibling_info_two_member_conjunction_phrase_verb_anaphor_with(
@@ -207,8 +211,9 @@ class PolishRulesTest(unittest.TestCase):
 
     def test_independent_noun_conjunction(self):
         self.compare_independent_noun(
-            "Pooglądali sobie wielkie lwy, węże, i słonie", [3, 5, 8],
-            excluded_nlps=['core_news_sm']
+            "Pooglądali sobie wielkie lwy, węże, i słonie",
+            [3, 5, 8],
+            excluded_nlps=["core_news_sm"],
         )
 
     @unittest.skipIf(train_version_mismatch, train_version_mismatch_message)
@@ -256,8 +261,9 @@ class PolishRulesTest(unittest.TestCase):
         )
 
     def test_potentially_indefinite_definite_common_noun(self):
-        self.compare_potentially_indefinite("Rozmawiałem z tym bratem", 3, False,
-        excluded_nlps=["core_news_sm"])
+        self.compare_potentially_indefinite(
+            "Rozmawiałem z tym bratem", 3, False, excluded_nlps=["core_news_sm"]
+        )
 
     def test_potentially_indefinite_common_noun_with_possessive_pronoun(self):
         self.compare_potentially_indefinite("Rozmawiałem z naszym bratem", 3, False)
@@ -373,7 +379,9 @@ class PolishRulesTest(unittest.TestCase):
         self.compare_potential_anaphor("Wtedy poszedłby do szkoły.", [1])
 
     def test_verb_conditional_split(self):
-        self.compare_potential_anaphor("By poszedł do szkoły.", [1], excluded_nlps=['core_news_md'])
+        self.compare_potential_anaphor(
+            "By poszedł do szkoły.", [1], excluded_nlps=["core_news_md"]
+        )
 
     def test_verb_modal_and_control_imperfective_infinitive(self):
         self.compare_potential_anaphor("Chce iść do szkoły.", [0])
@@ -476,8 +484,14 @@ class PolishRulesTest(unittest.TestCase):
         self.compare_potential_pair("Chłopiec zobaczył swojego psa.", 0, False, 2, 2)
 
     def test_masculine_nonreflexive_possessive(self):
-        self.compare_potential_pair("Chłopiec zobaczył jego psa.", 0, False, 2, 2,
-        excluded_nlps=["core_news_sm"])
+        self.compare_potential_pair(
+            "Chłopiec zobaczył jego psa.",
+            0,
+            False,
+            2,
+            2,
+            excluded_nlps=["core_news_sm"],
+        )
 
     def test_masculine_nonreflexive_possessive_control(self):
         self.compare_potential_pair("Chłopiec zobaczył też jej psa.", 0, False, 3, 0)
@@ -530,10 +544,24 @@ class PolishRulesTest(unittest.TestCase):
         )
 
     def test_neuter_pronoun_2(self):
-        self.compare_potential_pair("Dziecko weszło. Widzieli go.", 0, False, 4, 2, excluded_nlps=['core_news_sm'])
+        self.compare_potential_pair(
+            "Dziecko weszło. Widzieli go.",
+            0,
+            False,
+            4,
+            2,
+            excluded_nlps=["core_news_sm"],
+        )
 
     def test_neuter_pronoun_3(self):
-        self.compare_potential_pair("Dziecko weszło. Pomogli mu.", 0, False, 4, 2, excluded_nlps=['core_news_sm'])
+        self.compare_potential_pair(
+            "Dziecko weszło. Pomogli mu.",
+            0,
+            False,
+            4,
+            2,
+            excluded_nlps=["core_news_sm"],
+        )
 
     def test_neuter_pronoun_control_gender(self):
         self.compare_potential_pair(
@@ -580,16 +608,34 @@ class PolishRulesTest(unittest.TestCase):
         self.compare_potential_pair("Faceci weszli. Szczęśliwi byli.", 0, False, 4, 2)
 
     def test_virile_verb_not_marked(self):
-        self.compare_potential_pair("Faceci weszli. Szczęśliwi są.", 0, False, 4, 2,
-        excluded_nlps=["core_news_sm"])
+        self.compare_potential_pair(
+            "Faceci weszli. Szczęśliwi są.",
+            0,
+            False,
+            4,
+            2,
+            excluded_nlps=["core_news_sm"],
+        )
 
     def test_virile_verb_control_gender(self):
-        self.compare_potential_pair("Faceci weszli. Szczęśliwe były.", 0, False, 4, 0,
-        excluded_nlps=["core_news_sm"])
+        self.compare_potential_pair(
+            "Faceci weszli. Szczęśliwe były.",
+            0,
+            False,
+            4,
+            0,
+            excluded_nlps=["core_news_sm"],
+        )
 
     def test_virile_verb_control_number(self):
-        self.compare_potential_pair("Faceci weszli. Szczęśliwa była.", 0, False, 4, 0,
-        excluded_nlps=["core_news_sm"])
+        self.compare_potential_pair(
+            "Faceci weszli. Szczęśliwa była.",
+            0,
+            False,
+            4,
+            0,
+            excluded_nlps=["core_news_sm"],
+        )
 
     def test_virile_reflexive_possessive(self):
         self.compare_potential_pair("Faceci zobaczyli swojego psa.", 0, False, 2, 2)
@@ -626,8 +672,14 @@ class PolishRulesTest(unittest.TestCase):
         )
 
     def test_nonvirile_verb_marked_1(self):
-        self.compare_potential_pair("Kobiety weszły. Szczęśliwe były.", 0, False, 4, 2,
-        excluded_nlps=["core_news_sm"])
+        self.compare_potential_pair(
+            "Kobiety weszły. Szczęśliwe były.",
+            0,
+            False,
+            4,
+            2,
+            excluded_nlps=["core_news_sm"],
+        )
 
     def test_nonvirile_verb_marked_2(self):
         self.compare_potential_pair("Psy weszły. Szczęśliwe były.", 0, False, 4, 2)
@@ -639,23 +691,39 @@ class PolishRulesTest(unittest.TestCase):
         self.compare_potential_pair("Dzieci weszły. Szczęśliwe były.", 0, False, 4, 2)
 
     def test_nonvirile_verb_not_marked(self):
-        self.compare_potential_pair("Kobiety weszly. Szczęśliwe są.", 0, False, 4, 2,
-        excluded_nlps=["core_news_sm"])
+        self.compare_potential_pair(
+            "Kobiety weszly. Szczęśliwe są.",
+            0,
+            False,
+            4,
+            2,
+            excluded_nlps=["core_news_sm"],
+        )
 
     def test_nonvirile_verb_control_gender(self):
         self.compare_potential_pair("Kobiety weszły. Szczęśliwi byli.", 0, False, 4, 0)
 
     def test_nonvirile_verb_control_number(self):
-        self.compare_potential_pair("Kobiety weszły. Szczęśliwa była.", 0, False, 4, 0,
-        excluded_nlps=["core_news_sm"])
+        self.compare_potential_pair(
+            "Kobiety weszły. Szczęśliwa była.",
+            0,
+            False,
+            4,
+            0,
+            excluded_nlps=["core_news_sm"],
+        )
 
     def test_nonvirile_reflexive_possessive(self):
         self.compare_potential_pair("Kobiety zobaczyły swojego psa.", 0, False, 2, 2)
 
     def test_nonvirile_nonreflexive_possessive(self):
         self.compare_potential_pair(
-            "Kobiety zobaczyły ich psa.", 0, False, 2, 2, 
-            excluded_nlps=["core_news_md", "core_news_sm"]
+            "Kobiety zobaczyły ich psa.",
+            0,
+            False,
+            2,
+            2,
+            excluded_nlps=["core_news_md", "core_news_sm"],
         )
 
     def test_male_name(self):
@@ -689,13 +757,24 @@ class PolishRulesTest(unittest.TestCase):
         )
 
     def test_coordinated_phrase_two_animal_masculine(self):
-        self.compare_potential_pair("Są pies i lew. One są szczęśliwe.", 1, True, 5, 2,
-        excluded_nlps=["core_news_sm"]
-)
+        self.compare_potential_pair(
+            "Są pies i lew. One są szczęśliwe.",
+            1,
+            True,
+            5,
+            2,
+            excluded_nlps=["core_news_sm"],
+        )
 
     def test_coordinated_phrase_two_animal_masculine_control(self):
-        self.compare_potential_pair("Są pies i lew. Oni są szczęśliwi.", 1, True, 5, 0,
-        excluded_nlps=["core_news_sm"])
+        self.compare_potential_pair(
+            "Są pies i lew. Oni są szczęśliwi.",
+            1,
+            True,
+            5,
+            0,
+            excluded_nlps=["core_news_sm"],
+        )
 
     def test_coordinated_phrase_two_object_masculine(self):
         self.compare_potential_pair(
@@ -767,8 +846,14 @@ class PolishRulesTest(unittest.TestCase):
         self.compare_potential_pair("Są psy i lwy. One są szczęśliwe.", 1, True, 5, 2)
 
     def test_coordinated_phrase_two_plural_animal_masculine_control(self):
-        self.compare_potential_pair("Są psy i lwy. Oni są szczęśliwi.", 1, True, 5, 0,
-        excluded_nlps=["core_news_sm"])
+        self.compare_potential_pair(
+            "Są psy i lwy. Oni są szczęśliwi.",
+            1,
+            True,
+            5,
+            0,
+            excluded_nlps=["core_news_sm"],
+        )
 
     def test_coordinated_phrase_two_masculine_animal_and_object(self):
         self.compare_potential_pair("Są pies i dom. One są szczęśliwe.", 1, True, 5, 2)
@@ -913,8 +998,12 @@ class PolishRulesTest(unittest.TestCase):
 
     def test_coordinated_phrase_two_feminine_neuter_mix_verb_virile_control(self):
         self.compare_potential_pair(
-            "Przyszli kobiety i dzieci. One były szczęśliwe.", 1, True, 5, 0,
-            excluded_nlps=["core_news_sm"]
+            "Przyszli kobiety i dzieci. One były szczęśliwe.",
+            1,
+            True,
+            5,
+            0,
+            excluded_nlps=["core_news_sm"],
         )
 
     def test_coordinated_phrase_two_feminine_neuter_mix_verb_nonvirile(self):
@@ -924,14 +1013,22 @@ class PolishRulesTest(unittest.TestCase):
 
     def test_coordinated_phrase_two_feminine_neuter_mix_verb_nonvirile_control(self):
         self.compare_potential_pair(
-            "Przyjechały kobiety i dzieci. Oni byli szczęśliwi.", 1, True, 5, 0,
-            excluded_nlps=["core_news_sm"]
+            "Przyjechały kobiety i dzieci. Oni byli szczęśliwi.",
+            1,
+            True,
+            5,
+            0,
+            excluded_nlps=["core_news_sm"],
         )
 
     def test_coordinated_phrase_two_plural_personal_masculine_mixed_only_feminine(self):
         self.compare_potential_pair(
-            "Są synowie i dziewczyny. One są szczęśliwe.", 3, False, 5, 2,
-            excluded_nlps=["core_news_sm"]
+            "Są synowie i dziewczyny. One są szczęśliwe.",
+            3,
+            False,
+            5,
+            2,
+            excluded_nlps=["core_news_sm"],
         )
 
     def test_coordinated_phrase_two_plural_personal_masculine_mixed_only_feminine_z(
@@ -1000,9 +1097,9 @@ class PolishRulesTest(unittest.TestCase):
         )
 
     def test_potential_pair_possessive_in_genitive_phrase_simple_nonreflexive_1(self):
-        self.compare_potential_pair("Mąż jego kolegi przemówił", 0, False, 1, 0,
-        excluded_nlps=["core_news_sm"]
-    )
+        self.compare_potential_pair(
+            "Mąż jego kolegi przemówił", 0, False, 1, 0, excluded_nlps=["core_news_sm"]
+        )
 
     def test_potential_pair_possessive_in_genitive_phrase_simple_nonreflexive_2(self):
         self.compare_potential_pair("Mąż swojego kolegi przemówił", 0, False, 1, 0)
@@ -1016,7 +1113,12 @@ class PolishRulesTest(unittest.TestCase):
         self,
     ):
         self.compare_potential_pair(
-            "Mąż z mężem jego kolegi przemówili", 0, False, 3, 2, excluded_nlps=['core_news_sm']
+            "Mąż z mężem jego kolegi przemówili",
+            0,
+            False,
+            3,
+            2,
+            excluded_nlps=["core_news_sm"],
         )
 
     def test_potential_pair_possessive_in_genitive_phrase_coordination_head_reflexive(
@@ -1059,8 +1161,12 @@ class PolishRulesTest(unittest.TestCase):
         self,
     ):
         self.compare_potential_pair(
-            "Dom i dom stoją. One powiedziały, wszystko dobrze", 0, True, 5, 1, 
-            excluded_nlps=['core_news_md', 'core_news_sm']
+            "Dom i dom stoją. One powiedziały, wszystko dobrze",
+            0,
+            True,
+            5,
+            1,
+            excluded_nlps=["core_news_md", "core_news_sm"],
         )
 
     @unittest.skipIf(train_version_mismatch, train_version_mismatch_message)
@@ -1068,8 +1174,12 @@ class PolishRulesTest(unittest.TestCase):
         self,
     ):
         self.compare_potential_pair(
-            "Dom z domem stoją. One powiedziały, wszystko dobrze", 0, True, 5, 1, 
-            excluded_nlps=['core_news_md', 'core_news_sm']
+            "Dom z domem stoją. One powiedziały, wszystko dobrze",
+            0,
+            True,
+            5,
+            1,
+            excluded_nlps=["core_news_md", "core_news_sm"],
         )
 
     def test_potential_pair_non_personal_subject_personal_verb_noun_not_recognised(
@@ -1129,8 +1239,12 @@ class PolishRulesTest(unittest.TestCase):
 
     def test_potential_pair_plural_verb_anaphor_with_comitative_phrase_simple(self):
         self.compare_potential_pair(
-            "Piotr był szczęśliwy. Kupili z żoną nowy dom.", 0, False, 4, 2,
-            excluded_nlps=['core_news_sm']
+            "Piotr był szczęśliwy. Kupili z żoną nowy dom.",
+            0,
+            False,
+            4,
+            2,
+            excluded_nlps=["core_news_sm"],
         )
 
     def test_potential_pair_plural_verb_anaphor_with_comitative_phrase_coordination(
@@ -1208,9 +1322,14 @@ class PolishRulesTest(unittest.TestCase):
 
     def test_reflexive_in_wrong_situation_different_sentence_control(self):
         self.compare_potential_reflexive_pair(
-            "Widziałem człowieka. Drugi człowiek widział go.", 1, False, 6, 2, False, 0,
-            excluded_nlps=["core_news_sm"]
-
+            "Widziałem człowieka. Drugi człowiek widział go.",
+            1,
+            False,
+            6,
+            2,
+            False,
+            0,
+            excluded_nlps=["core_news_sm"],
         )
 
     def test_reflexive_in_wrong_situation_same_sentence_1(self):
@@ -1237,8 +1356,14 @@ class PolishRulesTest(unittest.TestCase):
 
     def test_non_reflexive_in_wrong_situation_same_sentence(self):
         self.compare_potential_reflexive_pair(
-            "Człowiek widział go.", 0, False, 2, 0, True, 0,
-            excluded_nlps=['core_news_sm']
+            "Człowiek widział go.",
+            0,
+            False,
+            2,
+            0,
+            True,
+            0,
+            excluded_nlps=["core_news_sm"],
         )
 
     def test_non_reflexive_in_wrong_situation_same_sentence_control(self):
@@ -1248,7 +1373,14 @@ class PolishRulesTest(unittest.TestCase):
 
     def test_non_reflexive_in_wrong_situation_same_sentence_instr(self):
         self.compare_potential_reflexive_pair(
-            "Człowiek poszedł z nim.", 0, False, 3, 0, True, 0, excluded_nlps=["core_news_sm"]
+            "Człowiek poszedł z nim.",
+            0,
+            False,
+            3,
+            0,
+            True,
+            0,
+            excluded_nlps=["core_news_sm"],
         )
 
     def test_non_reflexive_in_wrong_situation_same_sentence_instr_control(self):
@@ -1355,13 +1487,25 @@ class PolishRulesTest(unittest.TestCase):
 
     def test_reflexive_completely_within_noun_phrase_1(self):
         self.compare_potential_reflexive_pair(
-            "Opinia mojego przyjaciela o sobie była przesadna", 2, False, 4, 2, True, 2,
+            "Opinia mojego przyjaciela o sobie była przesadna",
+            2,
+            False,
+            4,
+            2,
+            True,
+            2,
         )
 
     def test_reflexive_completely_within_noun_phrase_1_control(self):
         self.compare_potential_reflexive_pair(
-            "Opinia mojego przyjaciela o nim była przesadna", 2, False, 4, 0, True, 0,
-            excluded_nlps=["core_news_md"]
+            "Opinia mojego przyjaciela o nim była przesadna",
+            2,
+            False,
+            4,
+            0,
+            True,
+            0,
+            excluded_nlps=["core_news_md"],
         )
 
     def test_reflexive_double_coordination_without_preposition(self):
@@ -1369,9 +1513,14 @@ class PolishRulesTest(unittest.TestCase):
             "Piotr i Agnieszka widzieli jego i ją", 0, False, 4, 0, True, 0
         )
         self.compare_potential_reflexive_pair(
-            "Piotr i Agnieszka widzieli jego i ją", 2, False, 6, 0, True, False,
-            excluded_nlps=["core_news_md", "core_news_sm"]
-
+            "Piotr i Agnieszka widzieli jego i ją",
+            2,
+            False,
+            6,
+            0,
+            True,
+            False,
+            excluded_nlps=["core_news_md", "core_news_sm"],
         )
 
     def test_reflexive_double_coordination_with_preposition(self):
@@ -1386,7 +1535,7 @@ class PolishRulesTest(unittest.TestCase):
             0,
             True,
             False,
-            excluded_nlps=["core_news_md", "core_news_sm"]
+            excluded_nlps=["core_news_md", "core_news_sm"],
         )
 
     def test_reflexive_posessive_same_noun_phrase(self):
@@ -1429,7 +1578,7 @@ class PolishRulesTest(unittest.TestCase):
             0,
             True,
             0,
-            excluded_nlps=["core_news_sm"]
+            excluded_nlps=["core_news_sm"],
         )
 
     def test_reflexive_relative_clause_object_with_conjunction(self):
@@ -1468,13 +1617,18 @@ class PolishRulesTest(unittest.TestCase):
     @unittest.skipIf(train_version_mismatch, train_version_mismatch_message)
     def test_potentially_introducing_with_ten_control(self):
         self.compare_potentially_introducing(
-            "On mieszka z tym kolegą", 4, False, excluded_nlps=['core_news_md', 'core_news_sm']
+            "On mieszka z tym kolegą",
+            4,
+            False,
+            excluded_nlps=["core_news_md", "core_news_sm"],
         )
 
     def test_potentially_introducing_with_ten_and_relative_clause(self):
         self.compare_potentially_introducing(
-            "On mieszka z tym kolegą, którego znasz", 4, True,
-            excluded_nlps=["core_news_sm"]
+            "On mieszka z tym kolegą, którego znasz",
+            4,
+            True,
+            excluded_nlps=["core_news_sm"],
         )
 
     def compare_potentially_referring_back_noun(
@@ -1497,7 +1651,10 @@ class PolishRulesTest(unittest.TestCase):
 
     def test_potentially_referring_back_noun_with_ten(self):
         self.compare_potentially_referring_back_noun(
-            "Mieszka z tym kolegą", 3, True, excluded_nlps=["core_news_md", "core_news_sm"]
+            "Mieszka z tym kolegą",
+            3,
+            True,
+            excluded_nlps=["core_news_md", "core_news_sm"],
         )
 
     def test_potentially_referring_back_noun_with_ten_and_relative_clause_control(self):

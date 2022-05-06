@@ -50,11 +50,15 @@ def get_nlps(language_name: str, *, add_coreferee: bool = True) -> List[Language
                 # specifies a model name that can no longer be loaded. This seems a reasonable
                 # assumption, but if it no longer applies this code will need to be changed in the
                 # future.
-                nlp = spacy.load("_".join((language_name, config[config_entry]["model"])))
+                nlp = spacy.load(
+                    "_".join((language_name, config[config_entry]["model"]))
+                )
                 if add_coreferee:
                     nlp.add_pipe("coreferee")
                 nlps.append(nlp)
-                nlp.meta["matches_train_version"] = nlp.meta["version"] == config[config_entry]["train_version"]
+                nlp.meta["matches_train_version"] = (
+                    nlp.meta["version"] == config[config_entry]["train_version"]
+                )
             nlps = sorted(nlps, key=lambda nlp: (nlp.meta["name"], nlp.meta["version"]))
             language_to_nlps[language_name] = nlps
         return language_to_nlps[language_name]
