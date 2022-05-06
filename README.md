@@ -475,7 +475,7 @@ This is achieved using a **rewind**: at a point in a text where no suitable inte
 
 #### 3.2 The neural ensemble
 
-The likelihood scores for [anaphoric pairs](#anaphor-pair-analysis) are calculated using an ensemble of five identical multilayer perceptrons using a rectified linear activation in the input and hidden layers and a sigmoid activation in the output layer. Each of the five networks outputs a probability between 0 and 1 for a given potential anaphoric pair and the mean of the five probabilities is used as the the score for that pair.
+The likelihood scores for [anaphoric pairs](#anaphor-pair-analysis) are calculated using an ensemble of five identical multilayer perceptrons using a rectified linear activation in the input and hidden layers. Each of the five networks outputs a probability between 0 and 1 for a given potential anaphoric pair. These probabilities are then fed into a softmax layer that selects the best potential referent for each anaphor.
 
 The inputs to each of the five networks consist of:
 
@@ -495,7 +495,7 @@ The structure shared by each of the five networks in the ensemble is shown in th
 
 ![Structure of an ensemble member](https://github.com/explosion/coreferee/blob/master/docs/nn_structure.png)
 
-Cross-linguistically, four training epochs were found to offer the best results; adding more training epochs caused the accuracy to start to tail off again owing to overfitting. Training for all relevant spaCy models for a given language takes between one and two hours on a high-end laptop.
+Training for all relevant spaCy models for a given language takes between one and two hours on a high-end laptop.
 
 <a id="adding-support-for-a-new-language"></a>
 
@@ -532,7 +532,7 @@ The steps involved are:
 python3 -m coreferee train --lang en --loader ParCorLoader,LitBankANNLoader --data <training-data-dir> --log <log-dir>
 ```
 
-10. Measure the performance of your model against older versions of spaCy and corresponding spaCy models: create a virtual environment for each version of spaCy, and from it measure the performance against the standard test corpus using the `coreferee check` command, of which an example is:
+10. Measure the performance of your model against older versions of spaCy and the corresponding spaCy models: create a virtual environment for each version of spaCy, and from it measure the performance against the standard test corpus using the `coreferee check` command, of which an example is:
 
 ```
 python3 -m coreferee check --lang en --loader ParCorLoader,LitBankANNLoader --data <training-data-dir> --log <log-dir>
@@ -615,15 +615,16 @@ The initial open-source version.
 ##### 6.7 Version 1.2.0
 
 - Removed dependencies to TensorFlow and Keras, switching to Thinc as the neural network platform. Switching to Thinc has led to serialized models that are around 30% of the size of the old models, and has also allowed the old limitation to be removed where `nlp.pipe()` could not be called with `n_process > 1` with forked processes.
+- Implemented a softmax layer to select the best potential referent for each anaphor as opposed to calculating independent scores for each pair.
 - Added matrix tests to support a variety of Python and spaCy versions, including spaCy 3.2 and spaCy 3.3.
-- Implemented a more representative stable-random split into train and test corpora
+- Implemented a stable-random split into train and test corpora as opposed to using the last 20% of loaded documents as the test corpus.
+- Improved the training script so that it remembers the model state at each epoch and chooses the best-performing state from the training history as the model to save.
+- Added the `coreferee check` command to enable performance measurement for an existing Coreferee model with a new spaCy model.
 
 <a id="open-issues"></a>
 
 ### 7. Open issues / requests for assistance
 
-1. Because optimising parsing speed was not a priority in the [project within which Coreferee came into being](#background-information), Coreferee is written purely in Python; it would be helpful if somebody could convert it to Cython.
+1. Because optimising parsing speed was not a priority in the [project within which Coreferee came into being](#background-information), Coreferee is written purely in Python; it would be helpful if somebody could convert relevant parts of it to Cython.
 
-2. There are almost certainly changes to the inputs and structure of the neural ensemble that would lead to improvements in accuracy, both cross-linguistically and for specific languages. The only caveat to bear in mind when trying out changes is that it should be possible for someone who does not understand neural networks to write rules for a new language. This means that Coreferee should detect necessary differences in the neural network behaviour between languages automatically rather than requiring the trainer to configure them.
-
-3. It would be useful if somebody could find a way of benchmarking Coreferee against other coreference resolution solutions, especially for English. One problem this would probably present is that using a benchmark necessitates a normative scope where a system aims to find exactly those types of coreference marked within the benchmark corpus, whereas the scope of Coreferee was determined by project requirements.
+2. It would be useful if somebody could find a way of benchmarking Coreferee against other coreference resolution solutions, especially for English. One problem this would probably present is that using a benchmark necessitates a normative scope where a system aims to find exactly those types of coreference marked within the benchmark corpus, whereas the scope of Coreferee was determined by project requirements.
