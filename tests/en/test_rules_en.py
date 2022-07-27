@@ -497,7 +497,9 @@ class EnglishRulesTest(unittest.TestCase):
         )
 
     def test_potential_pair_person_word_capitalized_exclusively_person_word(self):
-        self.compare_potential_pair("I saw a Copt. He was there", 3, False, 5, 2)
+        self.compare_potential_pair(
+            "I saw a Copt. He was there", 3, False, 5, 2, excluded_nlps=["core_web_sm"]
+        )
 
     def test_potential_pair_antecedent_in_prepositional_phrase_in_question(self):
         self.compare_potential_pair("In which room was it?", 2, False, 4, 0)

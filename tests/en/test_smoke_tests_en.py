@@ -31,6 +31,8 @@ class EnglishSmokeTest(unittest.TestCase):
                     expected_coref_chains, chains_representation, nlp.meta["name"]
                 )
             else:
+                print(nlp.meta["name"])
+                print(chains_representation)
                 self.assertTrue(
                     expected_coref_chains == chains_representation
                     or alternative_expected_coref_chains == chains_representation
@@ -95,7 +97,7 @@ class EnglishSmokeTest(unittest.TestCase):
         self.compare_annotations(
             "I saw a big dog. The dog was chasing a cat. It was wagging its tail",
             "[0: [4], [7], [13], [16]]",
-            alternative_expected_coref_chains="[0: [4], [7], 1: [9], [13], [16]]",
+            alternative_expected_coref_chains="[0: [4], [7], 1: [11], [13], [16]]",
         )
 
     def test_entity_coreference(self):
