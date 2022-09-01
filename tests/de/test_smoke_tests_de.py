@@ -121,7 +121,7 @@ class GermanSmokeTest(unittest.TestCase):
         self.compare_annotations(
             "Peter sprach laut. Alle mochten den freundlichen Mann.",
             "[0: [0], [8]]",
-            excluded_nlps=["core_news_sm"],
+            excluded_nlps=["core_news_sm", "core_news_md"],
         )
 
     def test_reflexive_simple(self):

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This script downloads the training corpora for English, German and Polish. Instructions for French are at the bottom. 
+# This script downloads the training corpora for English and German. Instructions for Polish and French are at the bottom. 
 #
 # Usage: download_corpora.sh <target dir>
 set -e
@@ -32,14 +32,15 @@ find "${TEMP_DIR}/ParCor" -type f | grep "German/Annotator1" | grep ".xml" | xar
 git clone https://github.com/dbamman/litbank
 cp litbank/coref/brat/* "${DATA_DIR}/en"
 
-# Download Polish Coreference Corpus
-
-git clone https://github.com/dbamman/litbank
-cp litbank/coref/brat/* "${DATA_DIR}/en"
-
 # Clean up
 popd
 rm -Rf ${TEMP_DIR}
+
+# Instructions for Polish
+# - download PCC corpus from http://zil.ipipan.waw.pl/PolishCoreferenceCorpus?action=AttachFile&do=view&target=PCC-1.5-BRAT.zip
+# - unzip PCC-1.5-BRAT.zip
+# - cp PCC-1.5-BRAT/*/* .
+# - rm -Rf PCC-1.5*
 
 # Instructions for French
 # - download DEMOCRAT corpus from https://www.ortolang.fr/market/corpora/democrat/

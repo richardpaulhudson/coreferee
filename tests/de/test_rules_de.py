@@ -201,7 +201,9 @@ class GermanRulesTest(unittest.TestCase):
         )
 
     def test_substituting_indefinite_pronoun(self):
-        self.compare_independent_noun("Einer der Jungen ist heimgekommen", [0, 2])
+        self.compare_independent_noun(
+            "Einer der Jungen ist heimgekommen", [0, 2], excluded_nlps=["core_news_sm"]
+        )
 
     @unittest.skipIf(train_version_mismatch, train_version_mismatch_message)
     def test_pronoun_noun(self):
@@ -254,6 +256,7 @@ class GermanRulesTest(unittest.TestCase):
     def test_first_and_second_person_pronouns(self):
         self.compare_potential_anaphor("Ich weiß, dass du ihn kennst", [5])
 
+    @unittest.skipIf(train_version_mismatch, train_version_mismatch_message)
     def test_colloquial_pronouns(self):
         self.compare_potential_anaphor(
             "Die ist rausgegangen, um den zu treffen. Die Frau war da", [0, 5]

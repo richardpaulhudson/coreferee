@@ -1,14 +1,19 @@
 import unittest
-from coreferee.test_utils import get_nlps
+from coreferee.test_utils import get_nlps, debug_structures
 
+nlps = get_nlps("pl")
+train_version_mismatch = False
+for nlp in nlps:
+    if not nlp.meta["matches_train_version"]:
+        train_version_mismatch = True
+train_version_mismatch_message = (
+    "Loaded model version does not match train model version"
+)
 
 class PolishSmokeTest(unittest.TestCase):
-    def setUp(self):
-
-        self.nlps = get_nlps("pl")
-
+    
     def all_nlps(self, func):
-        for nlp in self.nlps:
+        for nlp in nlps:
             func(nlp)
 
     def compare_annotations(
@@ -25,6 +30,9 @@ class PolishSmokeTest(unittest.TestCase):
                 return
 
             doc = nlp(doc_text)
+            debug_structures(doc)
+            if len(doc) > 5:
+                print(doc[5].morph)
             chains_representation = str(doc._.coref_chains)
             if alternative_expected_coref_chains is None:
                 self.assertEqual(
@@ -115,6 +123,7 @@ class PolishSmokeTest(unittest.TestCase):
             "Widziałem Piotra i Agnieszkę. Polował z Richardem na kota", "[0: [1], [5]]"
         )
 
+    @unittest.skipIf(train_version_mismatch, train_version_mismatch_message)
     def test_z_conjunction_with_verb_anaphor_nonvirile_verb(self):
         self.compare_annotations(
             "Widziałem Piotra i Agnieszkę. Polowały z koleżanką na kota. Szczęśliwe były.",
