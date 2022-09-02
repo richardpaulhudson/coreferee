@@ -64,7 +64,8 @@ class CommonAnnotationTest(unittest.TestCase):
         )
 
     def test_annotations_with_scoring(self):
-        self.compare_annotations("Richard told Peter he had finished", "[0: [0], [3]]")
+        self.compare_annotations("Richard told Peter he had finished", "[0: [0], [3]]",
+        alternative_expected_coref_chains="[0: [2], [3]]")
 
     def test_annotations_cataphora(self):
         self.compare_annotations(

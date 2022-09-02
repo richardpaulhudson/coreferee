@@ -1,6 +1,17 @@
 import unittest
 from coreferee.test_utils import get_nlps
 
+nlps = get_nlps("en")
+if len(nlps) == 0:
+    raise unittest.SkipTest("Model version not supported.")
+train_version_mismatch = False
+for nlp in nlps:
+    if not nlp.meta["matches_train_version"]:
+        train_version_mismatch = True
+train_version_mismatch_message = (
+    "Loaded model version does not match train model version"
+)
+
 
 class EnglishSmokeTest(unittest.TestCase):
     def setUp(self):
@@ -31,8 +42,6 @@ class EnglishSmokeTest(unittest.TestCase):
                     expected_coref_chains, chains_representation, nlp.meta["name"]
                 )
             else:
-                print(nlp.meta["name"])
-                print(chains_representation)
                 self.assertTrue(
                     expected_coref_chains == chains_representation
                     or alternative_expected_coref_chains == chains_representation
@@ -93,6 +102,7 @@ class EnglishSmokeTest(unittest.TestCase):
     def test_proper_noun_coreference_multiword_only_first_repeated(self):
         self.compare_annotations("I saw Peter Paul. Peter was chasing a cat.", "[]")
 
+    @unittest.skipIf(train_version_mismatch, train_version_mismatch_message)
     def test_common_noun_coreference(self):
         self.compare_annotations(
             "I saw a big dog. The dog was chasing a cat. It was wagging its tail",

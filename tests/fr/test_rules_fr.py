@@ -4,9 +4,8 @@ from coreferee.rules import RulesAnalyzerFactory
 from coreferee.test_utils import get_nlps
 from coreferee.data_model import Mention
 
-try:
-    nlps = get_nlps("fr")
-except ModelNotSupportedError:
+nlps = get_nlps("fr")
+if len(nlps) == 0:
     raise unittest.SkipTest("Model version not supported.")
 
 

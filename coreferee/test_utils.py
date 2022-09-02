@@ -2,6 +2,7 @@ from typing import List
 from os import sep
 from threading import Lock
 import pkg_resources
+from packaging import version
 import spacy
 from spacy.language import Language
 from spacy.tokens import Doc
@@ -46,13 +47,16 @@ def get_nlps(language_name: str, *, add_coreferee: bool = True) -> List[Language
             config = Config().from_disk(absolute_config_filename)
             nlps = []
             for config_entry in config:
-                # At present we presume there will never be an entry in the config file that
-                # specifies a model name that can no longer be loaded. This seems a reasonable
-                # assumption, but if it no longer applies this code will need to be changed in the
-                # future.
+                
                 nlp = spacy.load(
                     "_".join((language_name, config[config_entry]["model"]))
                 )
+                if version.parse(nlp.meta["version"]) < version.parse(
+                    config[config_entry]["from_version"]
+                ) or version.parse(nlp.meta["version"]) > version.parse(
+                    config[config_entry]["to_version"]
+                ):
+                    continue
                 if add_coreferee:
                     nlp.add_pipe("coreferee")
                 nlps.append(nlp)

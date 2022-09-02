@@ -112,8 +112,6 @@ class CommonTendenciesTest(unittest.TestCase):
                 ],
                 feature_map,
             )
-        else:
-            self.fail("Unsupported version.")
 
         feature_map = self.sm_tendencies_analyzer.get_feature_map(
             Mention(doc[2], False), doc
@@ -254,8 +252,6 @@ class CommonTendenciesTest(unittest.TestCase):
                 ],
                 feature_map,
             )
-        else:
-            self.fail("Unsupported version.")
 
         feature_map = self.sm_tendencies_analyzer.get_feature_map(doc[2], doc)
         self.assertEqual(len(self.sm_feature_table), len(feature_map))
@@ -395,8 +391,6 @@ class CommonTendenciesTest(unittest.TestCase):
                 ],
                 feature_map,
             )
-        else:
-            self.fail("Unsupported version")
 
         feature_map = self.sm_tendencies_analyzer.get_feature_map(
             Mention(doc[0], True), doc
@@ -720,8 +714,6 @@ class CommonTendenciesTest(unittest.TestCase):
                     Mention(doc[0], False), doc[2]
                 ),
             )
-        else:
-            self.fail("Unsupported version")
 
     @unittest.skipIf(train_version_mismatch, train_version_mismatch_message)
     def test_get_compatibility_map_coordination(self):
@@ -742,8 +734,6 @@ class CommonTendenciesTest(unittest.TestCase):
                     Mention(doc[0], True), doc[4]
                 ),
             )
-        else:
-            self.fail("Unsupported version")
 
     @unittest.skipIf(train_version_mismatch, train_version_mismatch_message)
     def test_get_compatibility_map_different_sentences(self):
@@ -764,8 +754,6 @@ class CommonTendenciesTest(unittest.TestCase):
                     Mention(doc[0], False), doc[3]
                 ),
             )
-        else:
-            self.fail("Unsupported version")
 
     @unittest.skipIf(train_version_mismatch, train_version_mismatch_message)
     def test_get_compatibility_map_same_sentence_no_governance(self):
@@ -789,8 +777,6 @@ class CommonTendenciesTest(unittest.TestCase):
                     Mention(doc[0], False), doc[4]
                 ),
             )
-        else:
-            self.fail("Unsupported version")
 
     @unittest.skipIf(train_version_mismatch, train_version_mismatch_message)
     def test_get_compatibility_map_same_sentence_lefthand_sibling_governance(self):
@@ -811,8 +797,6 @@ class CommonTendenciesTest(unittest.TestCase):
                     Mention(doc[0], False), doc[4]
                 ),
             )
-        else:
-            self.fail("Unsupported version.")
 
     @unittest.skipIf(train_version_mismatch, train_version_mismatch_message)
     def test_get_compatibility_map_same_sentence_lefthand_sibling_no_governance(self):
@@ -835,8 +819,6 @@ class CommonTendenciesTest(unittest.TestCase):
                     Mention(doc[1], False), doc[6]
                 ),
             )
-        else:
-            self.fail("Unsupported version.")
 
     @unittest.skipIf(train_version_mismatch, train_version_mismatch_message)
     def test_get_cosine_similarity_lg(self):
@@ -845,12 +827,22 @@ class CommonTendenciesTest(unittest.TestCase):
             "After Richard arrived, he said he was entering the big house"
         )
         self.lg_rules_analyzer.initialize(doc)
-        self.compare_compatibility_map(
-            [4, 0, 0, 0.3336621, 5],
-            self.lg_tendencies_analyzer.get_compatibility_map(
-                Mention(doc[0], False), doc[4]
-            ),
-        )
+        if self.lg_nlp.meta["version"] == "3.2.0":
+            self.compare_compatibility_map(
+                [4, 0, 0, 0.3336621, 5],
+                self.lg_tendencies_analyzer.get_compatibility_map(
+                    Mention(doc[0], False), doc[4]
+                ),
+            )
+        elif self.lg_nlp.meta["version"] == "3.4.0":
+            self.compare_compatibility_map(
+                [4, 0, 0, 0.22459798, 5],
+                self.lg_tendencies_analyzer.get_compatibility_map(
+                    Mention(doc[0], False), doc[4]
+                ),
+            )
+        else:
+            self.fail("Unsupported version.")
 
     @unittest.skipIf(train_version_mismatch, train_version_mismatch_message)
     def test_get_cosine_similarity_lg_no_vector_1(self):
@@ -860,12 +852,23 @@ class CommonTendenciesTest(unittest.TestCase):
         )
         self.lg_rules_analyzer.initialize(doc)
 
-        self.compare_compatibility_map(
-            [4, 0, 0, 0.59521705, 5],
-            self.lg_tendencies_analyzer.get_compatibility_map(
-                Mention(doc[0], False), doc[4]
-            ),
-        )
+        if self.lg_nlp.meta["version"] == "3.2.0":
+            self.compare_compatibility_map(
+                [4, 0, 0, 0.59521705, 5],
+                self.lg_tendencies_analyzer.get_compatibility_map(
+                    Mention(doc[0], False), doc[4]
+                ),
+            )
+        elif self.lg_nlp.meta["version"] == "3.4.0":
+            self.compare_compatibility_map(
+                [4, 0, 0, 0.25001550, 1],
+                self.lg_tendencies_analyzer.get_compatibility_map(
+                    Mention(doc[0], False), doc[4]
+                ),
+            )
+        else:
+            self.fail("Unsupported version.")
+        
 
     @unittest.skipIf(train_version_mismatch, train_version_mismatch_message)
     def test_get_cosine_similarity_lg_no_vector_2(self):
@@ -874,12 +877,23 @@ class CommonTendenciesTest(unittest.TestCase):
             "After Richard arrived, he saifefefwefefd he was entering the big house"
         )
         self.lg_rules_analyzer.initialize(doc)
-        self.compare_compatibility_map(
-            [4, 0, 0, 0.59521705, 5],
-            self.lg_tendencies_analyzer.get_compatibility_map(
-                Mention(doc[0], False), doc[4]
-            ),
-        )
+        if self.lg_nlp.meta["version"] == "3.2.0":
+            self.compare_compatibility_map(
+                [4, 0, 0, 0.59521705, 5],
+                self.lg_tendencies_analyzer.get_compatibility_map(
+                    Mention(doc[0], False), doc[4]
+                ),
+            )
+        elif self.lg_nlp.meta["version"] == "3.4.0":
+            self.compare_compatibility_map(
+                [4, 0, 0, 0.52951097, 2],
+                self.lg_tendencies_analyzer.get_compatibility_map(
+                    Mention(doc[0], False), doc[4]
+                ),
+            )
+        else:
+            self.fail("Unsupported version.")
+
 
     @unittest.skipIf(train_version_mismatch, train_version_mismatch_message)
     def test_get_cosine_similarity_sm_root_1(self):

@@ -4,6 +4,8 @@ from coreferee.test_utils import get_nlps
 from coreferee.data_model import Mention
 
 nlps = get_nlps("en")
+if len(nlps) == 0:
+    raise unittest.SkipTest("Model version not supported.")
 train_version_mismatch = False
 for nlp in nlps:
     if not nlp.meta["matches_train_version"]:
@@ -433,7 +435,8 @@ class EnglishRulesTest(unittest.TestCase):
     @unittest.skipIf(train_version_mismatch, train_version_mismatch_message)
     def test_potential_pair_he_she_antecedent_non_person_proper_noun(self):
         self.compare_potential_pair(
-            "I worked for Skateboards plc. She was there", 4, False, 6, 1
+            "I worked for Skateboards plc. She was there", 4, False, 6, 1,
+            excluded_nlps=["core_web_sm"]
         )
 
     def test_potential_pair_it_exclusively_person_antecedent(self):

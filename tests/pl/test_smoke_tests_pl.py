@@ -1,7 +1,9 @@
 import unittest
-from coreferee.test_utils import get_nlps, debug_structures
+from coreferee.test_utils import get_nlps
 
 nlps = get_nlps("pl")
+if len(nlps) == 0:
+    raise unittest.SkipTest("Model version not supported.")
 train_version_mismatch = False
 for nlp in nlps:
     if not nlp.meta["matches_train_version"]:
@@ -30,9 +32,6 @@ class PolishSmokeTest(unittest.TestCase):
                 return
 
             doc = nlp(doc_text)
-            debug_structures(doc)
-            if len(doc) > 5:
-                print(doc[5].morph)
             chains_representation = str(doc._.coref_chains)
             if alternative_expected_coref_chains is None:
                 self.assertEqual(

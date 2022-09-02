@@ -2,9 +2,8 @@ import unittest
 from coreferee.errors import ModelNotSupportedError
 from coreferee.test_utils import get_nlps
 
-try:
-    nlps = get_nlps("fr")
-except ModelNotSupportedError:
+nlps = get_nlps("fr")
+if len(nlps) == 0:
     raise unittest.SkipTest("Model version not supported.")
 
 train_version_mismatch = False
