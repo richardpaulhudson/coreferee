@@ -12,6 +12,9 @@ jobs:
         spacy_version: ['3.3.0']
         click_version: ['8.0.1']
         include:
+            python-version: '3.10'
+            spacy_version: '3.4.2'
+            click_version: '8.0.1'
           - os: 'ubuntu-latest'
             python-version: '3.9'
             spacy_version: '3.2.0'
@@ -24,6 +27,7 @@ jobs:
             python-version: '3.9'
             spacy_version: '3.0.0'
             click_version: '7.1.2'
+          - os: 'ubuntu-latest'
         exclude: # not yet supported by GitHub Actions
           - os: 'macos-latest'
             python_version: '3.11'
