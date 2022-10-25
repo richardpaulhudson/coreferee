@@ -28,7 +28,6 @@ jobs:
             python-version: '3.9'
             spacy_version: '3.0.0'
             click_version: '7.1.2'
-          - os: 'ubuntu-latest'
     runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout repository code
