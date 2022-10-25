@@ -12,6 +12,7 @@ jobs:
         spacy_version: ['3.3.0']
         click_version: ['8.0.1']
         include:
+          - os: 'ubuntu-latest'
             python-version: '3.10'
             spacy_version: '3.4.2'
             click_version: '8.0.1'
