@@ -14,7 +14,7 @@ jobs:
         include:
           - os: 'ubuntu-latest'
             python-version: '3.10'
-            spacy_version: '3.4.2'
+            spacy_version: '3.4.1'
             click_version: '8.0.1'
           - os: 'ubuntu-latest'
             python-version: '3.9'
