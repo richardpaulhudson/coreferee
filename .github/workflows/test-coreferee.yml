@@ -26,7 +26,7 @@ jobs:
             click_version: '7.1.2'
         exclude: # not yet supported by GitHub Actions
           - os: 'macos-latest'
-            python-version: '3.11'
+            python_version: '3.11'
     runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout repository code
