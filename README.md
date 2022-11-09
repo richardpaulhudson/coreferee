@@ -31,6 +31,7 @@ Author: <a href="mailto:richard@explosion.ai">Richard Paul Hudson, Explosion AI<
   - [6.6 Version 1.1.3](#version-113)
   - [6.7 Version 1.2.0](#version-120)
   - [6.8 Version 1.3.0](#version-130)
+  - [6.9 Version 1.3.1](#version-131)
 - [7. Open issues/requests for assistance](#open-issues)
 
 <a id="introduction"></a>
@@ -43,7 +44,7 @@ Author: <a href="mailto:richard@explosion.ai">Richard Paul Hudson, Explosion AI<
 
 Coreferences are situations where two or more words within a text refer to the same entity, e.g. _**John** went home because **he** was tired_. Resolving coreferences is an important general task within the natural language processing field.
 
-Coreferee is a Python 3 library (tested with versions 3.6—3.10) that is used together with [spaCy](https://spacy.io/) (tested with versions 3.0.0—3.4.0) to resolve coreferences within English, French, German and Polish texts. It is designed so that it is easy to add support for new languages. It uses a mixture of neural networks and programmed rules.
+Coreferee is a Python 3 library (tested with versions 3.6—3.10) that is used together with [spaCy](https://spacy.io/) (tested with versions 3.0.0—3.4.2) to resolve coreferences within English, French, German and Polish texts. It is designed so that it is easy to add support for new languages. It uses a mixture of neural networks and programmed rules.
 
 The library was originally developed at [msg systems](https://www.msg.group/en), but is now being maintained at [Explosion AI](https://explosion.ai).
 
@@ -273,7 +274,7 @@ Coreferee started life to assist the [Holmes](https://github.com/explosion/holme
 <table style="text-align:center; vertical-align:middle">
   <tr><td rowspan="2">ISO 639-1</td><td rowspan="2">Language</td><td rowspan="2">Training corpora</td><td rowspan="2">Total words in training corpora</td><td colspan="2"><code>*_trf</code> models</td><td colspan="2"><code>*_lg</code> models</td><td colspan="2"><code>*_md</code> models</td><td colspan="2"><code>*_sm</code> models</td></tr>  
   <tr><td align="center">Anaphors in 20%</td><td align="center">Accuracy (%)</td><td align="center">Anaphors in 20%</td><td align="center">Accuracy (%)</td><td align="center">Anaphors in 20%</td><td align="center">Accuracy (%)</td><td align="center">Anaphors in 20%</td><td align="center">Accuracy (%)</td></tr>
-  <tr><td align="center">en</td><td align="center">English</td><td align="center"><a href="https://opus.nlpl.eu/ParCor/">ParCor</a>/<a href="https://github.com/dbamman/litbank"> LitBank</a></td><td align="center">393564</td><td align="center"><b>2500—2580</b></td><td align="center"><b>80—83</b><td align="center"><b>2480—2520</b></td><td align="center"><b>81—82</b></td></td><td align="center">2480—2510</td><td align="center">81</td><td align="center">2540—2560</td><td align="center">81—82</td></tr>
+  <tr><td align="center">en</td><td align="center">English</td><td align="center"><a href="https://opus.nlpl.eu/ParCor/">ParCor</a>/<a href="https://github.com/dbamman/litbank"> LitBank</a></td><td align="center">393564</td><td align="center"><b>2500—2580</b></td><td align="center"><b>80—83</b><td align="center"><b>2480—2520</b></td><td align="center"><b>81—82</b></td></td><td align="center">2480—2510</td><td align="center">81-83</td><td align="center">2510—2560</td><td align="center">81—82</td></tr>
   <tr><td align="center">de</td><td align="center">German</td><td align="center"><a href="https://opus.nlpl.eu/ParCor/">ParCor</a></td><td align="center">164300</td><td align="center">-</td><td align="center">-</td><td align="center"><b>530—570</b></td><td align="center"><b>79—80</b></td><td align="center">520—550</td><td align="center">79—80</td><td align="center">530—550</td><td align="center">76—79</td></tr>
   <tr><td align="center">fr</td><td align="center">French</td><td align="center"><a href="https://www.ortolang.fr/market/corpora/democrat/v1.1">DEMOCRAT</a></td><td align="center">323754</td><td align="center">-</td><td align="center">-</td><td align="center"><b>1270—1280</b></td><td align="center"><b>71—72</b></td><td align="center">1280—1300</td><td align="center">68—70</td><td align="center">1130—1140</td><td align="center">63—64</td></tr>
   <tr><td align="center">pl</td><td align="center">Polish</td><td align="center"><a href="http://zil.ipipan.waw.pl/PolishCoreferenceCorpus">PCC</a></td><td align="center">548268</td><td align="center">-</td><td align="center">-</td><td align="center"><b>1730—1790</b></td><td align="center"><b>72—76</b></td><td align="center">1740—1790</td><td align="center">70—75</td><td align="center">-</td><td align="center">-</td></tr>
@@ -627,6 +628,12 @@ The initial open-source version.
 ##### 6.8 Version 1.3.0
 
 - Added support for spaCy v3.4 for English, German and Polish.
+
+<a id="version-131"></a>
+
+##### 6.9 Version 1.3.1
+
+- Added support for the v3.4.1 English models.
 
 <a id="open-issues"></a>
 

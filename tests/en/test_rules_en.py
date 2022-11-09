@@ -435,8 +435,12 @@ class EnglishRulesTest(unittest.TestCase):
     @unittest.skipIf(train_version_mismatch, train_version_mismatch_message)
     def test_potential_pair_he_she_antecedent_non_person_proper_noun(self):
         self.compare_potential_pair(
-            "I worked for Skateboards plc. She was there", 4, False, 6, 1,
-            excluded_nlps=["core_web_sm"]
+            "I worked for Skateboards plc. She was there",
+            4,
+            False,
+            6,
+            1,
+            excluded_nlps=["core_web_sm"],
         )
 
     def test_potential_pair_it_exclusively_person_antecedent(self):
@@ -491,6 +495,7 @@ class EnglishRulesTest(unittest.TestCase):
     def test_potential_pair_person_word_non_capitalized(self):
         self.compare_potential_pair("I saw a job. He was there", 3, False, 5, 0)
 
+    @unittest.skipIf(train_version_mismatch, train_version_mismatch_message)
     def test_potential_pair_person_word_capitalized(self):
         self.compare_potential_pair("I saw Job. He was there", 2, False, 4, 1)
 
