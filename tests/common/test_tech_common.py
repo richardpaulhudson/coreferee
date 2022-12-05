@@ -208,7 +208,11 @@ class CommonUtilsTest(unittest.TestCase):
             mkdir(output_dir)
             package(Path(input_dir), Path(output_dir))
             versioned_model_name = listdir(output_dir)[0]
-            chdir(sep.join((output_dir, versioned_model_name, model_name, versioned_model_name)))
+            chdir(
+                sep.join(
+                    (output_dir, versioned_model_name, model_name, versioned_model_name)
+                )
+            )
             nlp2 = spacy.load(".")
             doc = nlp2("I saw a dog. It wagged its tail.")
             self.assertEqual("[0: [3], [5], [7]]", str(doc._.coref_chains))
