@@ -138,6 +138,7 @@ class CorefereeBroker:
         self.nlp = nlp
         self.pid = os.getpid()
         self.annotator = CorefereeManager().get_annotator(nlp)
+        CorefereeBroker.set_extensions()
 
     def __call__(self, doc: Doc) -> Doc:
         try:

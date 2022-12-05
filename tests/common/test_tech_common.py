@@ -1,9 +1,12 @@
 import unittest
-import os
+import tempfile
+from os import sep, mkdir, chdir, listdir
+from pathlib import Path
 from multiprocessing import Process, Manager, Queue as m_Queue
 from queue import Queue
 from threading import Thread
 import spacy
+from spacy.cli.package import package
 from spacy.tokens import Doc
 from thinc.util import prefer_gpu, require_cpu
 from coreferee.test_utils import get_nlps
@@ -29,6 +32,8 @@ class CommonUtilsTest(unittest.TestCase):
         nlps = get_nlps("en")
         for nlp in (nlp for nlp in nlps if nlp.meta["name"] == "core_web_sm"):
             self.sm_nlp = nlp
+        for nlp in (nlp for nlp in nlps if nlp.meta["name"] == "core_web_lg"):
+            self.lg_nlp = nlp
 
     def test_serialization_with_scoring(self):
         doc = self.sm_nlp("Peter told Paul he was dissatisfied.")
@@ -193,3 +198,17 @@ class CommonUtilsTest(unittest.TestCase):
         self.assertEqual(NUMBER_OF_PROCESSES, len(returned_numbers))
         for worker in workers:
             worker.terminate()
+
+    def test_model_packaging(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            model_name = "_".join(("en", self.lg_nlp.meta["name"]))
+            input_dir = sep.join((tmpdir, model_name))
+            output_dir = sep.join((tmpdir, "output"))
+            self.lg_nlp.to_disk(input_dir)
+            mkdir(output_dir)
+            package(Path(input_dir), Path(output_dir))
+            versioned_model_name = listdir(output_dir)[0]
+            chdir(sep.join((output_dir, versioned_model_name, model_name, versioned_model_name)))
+            nlp2 = spacy.load(".")
+            doc = nlp2("I saw a dog. It wagged its tail.")
+            self.assertEqual("[0: [3], [5], [7]]", str(doc._.coref_chains))
