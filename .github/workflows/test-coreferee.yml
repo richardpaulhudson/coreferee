@@ -78,8 +78,8 @@ jobs:
       run: |
         pytest tests/common
         pytest tests/en
-        python tests/de
-        python tests/pl
+        pytest tests/de
+        pytest tests/pl
 
     - name: Test Coreferee (French)
       if: matrix.spacy_version == '3.1.0' ||  matrix.spacy_version == '3.2.0'
