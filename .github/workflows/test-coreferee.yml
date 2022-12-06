@@ -55,14 +55,32 @@ jobs:
         python -m spacy download en_core_web_md
         python -m spacy download en_core_web_lg
         python -m spacy download en_core_web_trf
+        python -m spacy download de_core_news_sm
+        python -m spacy download de_core_news_md
+        python -m spacy download de_core_news_lg
+        python -m spacy download fr_core_news_sm
+        python -m spacy download fr_core_news_md
+        python -m spacy download fr_core_news_lg
+        python -m spacy download pl_core_news_md
+        python -m spacy download pl_core_news_lg
         
     - name: Install Coreferee
       run: |
         cd ${{ github.workspace }}
         pip install .
         python -m coreferee install en
+        python -m coreferee install de
+        python -m coreferee install fr
+        python -m coreferee install pl
 
-    - name: Test Coreferee
+    - name: Test Coreferee (except French)
       run: |
         pytest tests/common
         pytest tests/en
+        python tests/de
+        python tests/pl
+
+    - name: Test Coreferee (French)
+      if: spacy_version in ('3.1.0', '3.2.0')
+      run: |
+        pytest tests/fr
