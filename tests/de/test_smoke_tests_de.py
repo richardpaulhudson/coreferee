@@ -118,6 +118,7 @@ class GermanSmokeTest(unittest.TestCase):
             "[0: [4], [7], [12], [15]]",
         )
 
+    @unittest.skipIf(train_version_mismatch, train_version_mismatch_message)
     def test_entity_coreference(self):
         self.compare_annotations(
             "Peter sprach laut. Alle mochten den freundlichen Mann.",
