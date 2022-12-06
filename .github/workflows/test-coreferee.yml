@@ -81,6 +81,6 @@ jobs:
         python tests/pl
 
     - name: Test Coreferee (French)
-      if: spacy_version in ('3.1.0', '3.2.0')
+      if: matrix.spacy_version in ('3.1.0', '3.2.0')
       run: |
         pytest tests/fr
