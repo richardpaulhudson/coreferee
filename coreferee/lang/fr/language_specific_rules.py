@@ -1275,7 +1275,8 @@ class LanguageSpecificRulesAnalyzer(RulesAnalyzer):
         # e.g. 'Peugeot' -> 'l'entreprise'
         new_reverse_entity_noun_dictionary = {
             noun: "PER" for noun in self.person_roles  # type:ignore[attr-defined]
-        } | self.reverse_entity_noun_dictionary
+        }
+        new_reverse_entity_noun_dictionary.update(self.reverse_entity_noun_dictionary)
 
         if (
             self.get_noun_core_lemma(referring) in new_reverse_entity_noun_dictionary
