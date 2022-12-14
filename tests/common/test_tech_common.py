@@ -202,7 +202,9 @@ class CommonUtilsTest(unittest.TestCase):
     def test_model_packaging(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             model_name = "_".join(("en", self.lg_nlp.meta["name"]))
+            print("model_name:", model_name)
             input_dir = sep.join((tmpdir, model_name))
+            print("input_dir:", input_dir)
             output_dir = sep.join((tmpdir, "output"))
             self.lg_nlp.to_disk(input_dir)
             mkdir(output_dir)
