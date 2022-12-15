@@ -1280,6 +1280,7 @@ class GermanRulesTest(unittest.TestCase):
             "Aus dieser Überlegung ergab sich ein Problem.", 2, False, 4, 0, False, 2
         )
 
+    @unittest.skipIf(train_version_mismatch, train_version_mismatch_message)
     def test_reflexive_double_coordination_without_preposition(self):
         self.compare_potential_reflexive_pair(
             "Wolfgang und Marie sahen ihn und sie.", 0, False, 4, 0, True, 0
