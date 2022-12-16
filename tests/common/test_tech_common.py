@@ -201,7 +201,7 @@ class CommonUtilsTest(unittest.TestCase):
             worker.terminate()
 
     def test_model_packaging(self):
-        if version.parse(nlp.meta["version"]) < version.parse("3.3.0"):
+        if version.parse(self.lg_nlp.meta["version"]) < version.parse("3.3.0"):
             skip("Old spaCy version")
         with tempfile.TemporaryDirectory() as tmpdir:
             model_name = "_".join(("en", self.lg_nlp.meta["name"]))
