@@ -22,7 +22,7 @@ class Worker:
             output_queue.put((first, second, third, fourth, returned_number))
 
 
-class CommonTechTest(unittest.TestCase):
+class CommonGeneralTest(unittest.TestCase):
     def setUp(self):
         nlps = get_nlps("en")
         for nlp in (nlp for nlp in nlps if nlp.meta["name"] == "core_web_sm"):
