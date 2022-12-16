@@ -6,6 +6,7 @@ from pathlib import Path
 from multiprocessing import Process, Manager, Queue as m_Queue
 from queue import Queue
 from threading import Thread
+from pytest import skip
 import spacy
 from spacy.cli.package import package
 from spacy.tokens import Doc
@@ -14,15 +15,6 @@ from coreferee.test_utils import get_nlps
 
 NUMBER_OF_THREADS = 50
 NUMBER_OF_PROCESSES = 2
-
-nlps = get_nlps("en")
-old_spaCy_version = False
-for nlp in nlps:
-    if version.parse(nlp.meta["version"]) < version.parse("3.3.0"):
-        old_spaCy_version = True
-old_spaCy_version_message = (
-    "Loaded model version does not match train model version"
-)
 
 class Worker:
     def listen(self, input_queue):
@@ -208,8 +200,9 @@ class CommonUtilsTest(unittest.TestCase):
         for worker in workers:
             worker.terminate()
 
-    @unittest.skipIf(old_spaCy_version, old_spaCy_version_message)
     def test_model_packaging(self):
+        if version.parse(nlp.meta["version"]) < version.parse("3.3.0"):
+            skip("Old spaCy version")
         with tempfile.TemporaryDirectory() as tmpdir:
             model_name = "_".join(("en", self.lg_nlp.meta["name"]))
             input_dir = sep.join((tmpdir, model_name))
