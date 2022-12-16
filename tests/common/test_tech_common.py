@@ -19,7 +19,7 @@ nlps = get_nlps("en")
 old_spaCy_version = False
 for nlp in nlps:
     if version.parse(nlp.meta["version"]) < version.parse("3.3.0"):
-        old_spaCy_mismatch = True
+        old_spaCy_version = True
 old_spaCy_version_message = (
     "Loaded model version does not match train model version"
 )
