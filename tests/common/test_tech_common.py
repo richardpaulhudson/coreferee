@@ -1,12 +1,8 @@
 import unittest
-from packaging import version
-from pathlib import Path
 from multiprocessing import Process, Manager, Queue as m_Queue
 from queue import Queue
 from threading import Thread
-from pytest import skip
 import spacy
-from spacy.cli.package import package
 from spacy.tokens import Doc
 from thinc.util import prefer_gpu, require_cpu
 from coreferee.test_utils import get_nlps
