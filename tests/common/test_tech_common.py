@@ -1,6 +1,7 @@
 import unittest
 import tempfile
 from os import sep, mkdir, chdir, listdir
+from packaging import version
 from pathlib import Path
 from multiprocessing import Process, Manager, Queue as m_Queue
 from queue import Queue
@@ -14,6 +15,14 @@ from coreferee.test_utils import get_nlps
 NUMBER_OF_THREADS = 50
 NUMBER_OF_PROCESSES = 2
 
+nlps = get_nlps("en")
+old_spaCy_version = False
+for nlp in nlps:
+    if version.parse(nlp.meta["version"]) < version.parse("3.3.0"):
+        old_spaCy_mismatch = True
+old_spaCy_version_message = (
+    "Loaded model version does not match train model version"
+)
 
 class Worker:
     def listen(self, input_queue):
@@ -199,12 +208,11 @@ class CommonUtilsTest(unittest.TestCase):
         for worker in workers:
             worker.terminate()
 
+    @unittest.skipIf(old_spaCy_version, old_spaCy_version_message)
     def test_model_packaging(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             model_name = "_".join(("en", self.lg_nlp.meta["name"]))
-            print("model_name:", model_name)
             input_dir = sep.join((tmpdir, model_name))
-            print("input_dir:", input_dir)
             output_dir = sep.join((tmpdir, "output"))
             self.lg_nlp.to_disk(input_dir)
             mkdir(output_dir)
