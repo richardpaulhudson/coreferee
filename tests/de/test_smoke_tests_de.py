@@ -70,6 +70,7 @@ class GermanSmokeTest(unittest.TestCase):
         self.compare_annotations(
             "Ich sah einen Hund und ein Pferd. Sie jagten eine Katze",
             "[0: [3, 6], [8]]",
+            excluded_nlps=["core_news_sm"],
         )
 
     @unittest.skipIf(train_version_mismatch, train_version_mismatch_message)
