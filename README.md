@@ -636,6 +636,8 @@ The initial open-source version.
 
 - Added support for the v3.4.1 English models.
 
+<a id="version-140"></a>
+
 ##### 6.10 Version 1.4.0
 
 - Made it possible to package spaCy pipelines containing Coreferee.
