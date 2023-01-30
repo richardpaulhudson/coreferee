@@ -641,7 +641,7 @@ The initial open-source version.
 ##### 6.10 Version 1.4.0
 
 - Made it possible to package spaCy pipelines containing Coreferee.
-- Add an entry point for Coreferee so it does not need to be imported explicitly alongside spaCy.
+- Added an entry point for Coreferee so it does not need to be imported explicitly alongside spaCy.
 - Added support for spaCy v3.5 for English, German and Polish.
 
 <a id="open-issues"></a>
