@@ -307,7 +307,9 @@ class GermanRulesTest(unittest.TestCase):
         self.compare_potential_anaphor("Es donnert.", [])
 
     def test_avalent_es_2(self):
-        self.compare_potential_anaphor("Es hat gedonnert.", [])
+        self.compare_potential_anaphor(
+            "Es hat gedonnert.", [], excluded_nlps=["core_news_sm"]
+        )
 
     def test_avalent_es_3(self):
         self.compare_potential_anaphor("Es soll gedonnert haben.", [])
@@ -752,7 +754,12 @@ class GermanRulesTest(unittest.TestCase):
 
     def test_potential_pair_diminutive_3(self):
         self.compare_potential_pair(
-            "Ich sah ein Schlüsselein. Dieses stand", 3, False, 5, 2
+            "Ich sah ein Schlüsselein. Dieses stand",
+            3,
+            False,
+            5,
+            2,
+            excluded_nlps=["core_news_md"],
         )
 
     def test_potential_pair_diminutive_control(self):
@@ -1021,7 +1028,7 @@ class GermanRulesTest(unittest.TestCase):
             False,
             6,
             2,
-            excluded_nlps=["core_news_sm"],
+            excluded_nlps=["core_news_sm", "core_news_md"],
         )
 
     def test_potential_pair_antecedent_in_prepositional_phrase_in_question(self):

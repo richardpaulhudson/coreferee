@@ -1,6 +1,6 @@
 # Coreferee
 
-Author: <a href="mailto:richard@explosion.ai">Richard Paul Hudson, Explosion AI</a>
+Author: [Richard Paul Hudson](https://github.com/richardpaulhudson)
 
 - [1. Introduction](#introduction)
   - [1.1 The basic idea](#the-basic-idea)
@@ -32,6 +32,7 @@ Author: <a href="mailto:richard@explosion.ai">Richard Paul Hudson, Explosion AI<
   - [6.7 Version 1.2.0](#version-120)
   - [6.8 Version 1.3.0](#version-130)
   - [6.9 Version 1.3.1](#version-131)
+  - [6.10 Version 1.4.0](#version-140)
 - [7. Open issues/requests for assistance](#open-issues)
 
 <a id="introduction"></a>
@@ -44,9 +45,9 @@ Author: <a href="mailto:richard@explosion.ai">Richard Paul Hudson, Explosion AI<
 
 Coreferences are situations where two or more words within a text refer to the same entity, e.g. _**John** went home because **he** was tired_. Resolving coreferences is an important general task within the natural language processing field.
 
-Coreferee is a Python 3 library (tested with versions 3.6—3.10) that is used together with [spaCy](https://spacy.io/) (tested with versions 3.0.0—3.4.2) to resolve coreferences within English, French, German and Polish texts. It is designed so that it is easy to add support for new languages. It uses a mixture of neural networks and programmed rules.
+Coreferee is a Python 3 library (tested with versions 3.6—3.10) that is used together with [spaCy](https://spacy.io/) (tested with versions 3.0.0—3.5.0) to resolve coreferences within English, French, German and Polish texts. It is designed so that it is easy to add support for new languages. It uses a mixture of neural networks and programmed rules.
 
-The library was originally developed at [msg systems](https://www.msg.group/en), but is now being maintained at [Explosion AI](https://explosion.ai).
+The library was originally developed at [msg systems](https://www.msg.group/en) and was also maintained for a while at [Explosion AI](https://explosion.ai).
 
 <a id="getting-started"></a>
 
@@ -235,7 +236,7 @@ With unlimited training data, it would be possible to train a system to employ a
 
 - Especially with limited training data but probably even with the largest available training datasets, it is unlikely that a system will learn more than the very simplest tendencies for strategy 3). However, making word vectors available to neural networks ensures that Coreferee can make use of whatever tendencies are discernable.
 
-Coreferee started life to assist the [Holmes](https://github.com/explosion/holmes-extractor) project, which is used for information extraction and intelligent search. Coreferee is in no way dependent on Holmes, but this original aim has led to several design decisions that may seem somewhat atypical. Several of them could easily be altered by someone with a requirement to do so:
+Coreferee started life to assist the [Holmes](https://github.com/richardpaulhudson/holmes-extractor) project, which is used for information extraction and intelligent search. Coreferee is in no way dependent on Holmes, but this original aim has led to several design decisions that may seem somewhat atypical. Several of them could easily be altered by someone with a requirement to do so:
 
 - A mention within Coreferee does not consist of a span, but rather of a single token or of a list of tokens that stand in a coordination relationship to one another.
 
@@ -275,16 +276,16 @@ Coreferee started life to assist the [Holmes](https://github.com/explosion/holme
   <tr><td rowspan="2">ISO 639-1</td><td rowspan="2">Language</td><td rowspan="2">Training corpora</td><td rowspan="2">Total words in training corpora</td><td colspan="2"><code>*_trf</code> models</td><td colspan="2"><code>*_lg</code> models</td><td colspan="2"><code>*_md</code> models</td><td colspan="2"><code>*_sm</code> models</td></tr>  
   <tr><td align="center">Anaphors in 20%</td><td align="center">Accuracy (%)</td><td align="center">Anaphors in 20%</td><td align="center">Accuracy (%)</td><td align="center">Anaphors in 20%</td><td align="center">Accuracy (%)</td><td align="center">Anaphors in 20%</td><td align="center">Accuracy (%)</td></tr>
   <tr><td align="center">en</td><td align="center">English</td><td align="center"><a href="https://opus.nlpl.eu/ParCor/">ParCor</a>/<a href="https://github.com/dbamman/litbank"> LitBank</a></td><td align="center">393564</td><td align="center"><b>2500—2580</b></td><td align="center"><b>80—83</b><td align="center"><b>2480—2520</b></td><td align="center"><b>81—82</b></td></td><td align="center">2480—2510</td><td align="center">81-83</td><td align="center">2510—2560</td><td align="center">81—82</td></tr>
-  <tr><td align="center">de</td><td align="center">German</td><td align="center"><a href="https://opus.nlpl.eu/ParCor/">ParCor</a></td><td align="center">164300</td><td align="center">-</td><td align="center">-</td><td align="center"><b>530—570</b></td><td align="center"><b>79—80</b></td><td align="center">520—550</td><td align="center">79—80</td><td align="center">530—550</td><td align="center">76—79</td></tr>
+  <tr><td align="center">de</td><td align="center">German</td><td align="center"><a href="https://opus.nlpl.eu/ParCor/">ParCor</a></td><td align="center">164300</td><td align="center">-</td><td align="center">-</td><td align="center"><b>530—570</b></td><td align="center"><b>79—80</b></td><td align="center">520—550</td><td align="center">76—80</td><td align="center">530—550</td><td align="center">76—79</td></tr>
   <tr><td align="center">fr</td><td align="center">French</td><td align="center"><a href="https://www.ortolang.fr/market/corpora/democrat/v1.1">DEMOCRAT</a></td><td align="center">323754</td><td align="center">-</td><td align="center">-</td><td align="center"><b>1270—1280</b></td><td align="center"><b>71—72</b></td><td align="center">1280—1300</td><td align="center">68—70</td><td align="center">1130—1140</td><td align="center">63—64</td></tr>
-  <tr><td align="center">pl</td><td align="center">Polish</td><td align="center"><a href="http://zil.ipipan.waw.pl/PolishCoreferenceCorpus">PCC</a></td><td align="center">548268</td><td align="center">-</td><td align="center">-</td><td align="center"><b>1730—1790</b></td><td align="center"><b>72—76</b></td><td align="center">1740—1790</td><td align="center">70—75</td><td align="center">-</td><td align="center">-</td></tr>
+  <tr><td align="center">pl</td><td align="center">Polish</td><td align="center"><a href="http://zil.ipipan.waw.pl/PolishCoreferenceCorpus">PCC</a></td><td align="center">548268</td><td align="center">-</td><td align="center">-</td><td align="center"><b>1730—1790</b></td><td align="center"><b>72—76</b></td><td align="center">1740—1800</td><td align="center">70—75</td><td align="center">-</td><td align="center">-</td></tr>
 </table>
 
 Coreferee produces a range of neural-network models for each language corresponding to the various spaCy models for that language. The [neural network inputs](#the-neural-ensemble) include word vectors. With `_sm` (small) models, both spaCy and Coreferee use context-sensitive tensors as an alternative to word vectors. `_trf` (transformer-based) models, on the other hand, do not use or offer word vectors at all. To remedy this problem, the model configuration files (`config.cfg` in the directory for each language) allow a **vectors model** to be specified for use when a main model does not have its own vectors. Coreferee then combines the linguistic information generated by the main model with vector information returned for the individual words in each document by the vectors model.
 
 Because the Coreferee models are rather large (20GB-30GB for the group of models for a given language) and because many users will only be interested in one language, the group of models for a given language is installed using `python3 -m coreferee install` as demonstrated in the introduction. All Coreferee models are more or less the same size; a larger spaCy model does not equate to a larger Coreferee model. As the figures above demonstrate, the accuracy of Coreferee corresponds closely to the size of the underlying spaCy model, and users are urged to use the larger spaCy models. It is in any case unclear whether there is a situation in which it would make sense to use Coreferee with an `_sm` model as the Coreferee model would then be considerably larger than the spaCy model! As this discrepancy is especially extreme for the Polish models, Coreferee no longer supports `pl_core_news_sm` from version 1.1.0 onwards.
 
-The English, German and Polish models support spaCy versions from 3.0.0 to 3.4.0, while the French models support spaCy versions from 3.1.0 to 3.2.0. Because the accuracies and number of anaphors found differ slightly depending on the spaCy version used, the table above cites ranges for each model.
+The English, German and Polish models support spaCy versions from 3.0.0 to 3.5.0, while the French models support spaCy versions from 3.1.0 to 3.2.0. Because the accuracies and number of anaphors found differ slightly depending on the spaCy version used, the table above cites ranges for each model.
 
 Assessing and comparing the precision and recall of anaphor resolution algorithms is notoriously difficult. For one thing, two human annotators of the same data will not always agree (and, indeed, there are some cases where Coreferee and a training annotator disagree where Coreferee's interpretation seems the more plausible!) And the same algorithm may perform with wildly different accuracies with different test documents depending on how clearly the documents are written and how often there are competing interpretations of individual anaphors.
 
@@ -554,7 +555,7 @@ python3 -m coreferee install <ISO 639-1>
 
 15. Go through the documentation (`README.md` and `SHORTREADME.md`) adding information about the new language wherever the supported languages are listed in some way.
 
-16. Issue a pull request. We ask that you supply us with the zip file placed into `<log-dir>` in point 9. Because this will contain a considerable amount of raw information from the training corpora, it will normally be preferable from a licensing viewpoint to <a href="mailto:richard@explosion.ai">send it out of band</a> rather than attaching it to the pull request.
+16. Issue a pull request. We ask that you supply us with the zip file placed into `<log-dir>` in point 9. Because this will contain a considerable amount of raw information from the training corpora, it will normally be preferable from a licensing viewpoint to <a href="mailto:hudsonrichardpaul@gmail.com">send it out of band</a> rather than attaching it to the pull request.
 
 <a id="adding-support-for-a-custom-spaCy-model"></a>
 
@@ -634,6 +635,12 @@ The initial open-source version.
 ##### 6.9 Version 1.3.1
 
 - Added support for the v3.4.1 English models.
+
+##### 6.10 Version 1.4.0
+
+- Made it possible to package spaCy pipelines containing Coreferee.
+- Add an entry point for Coreferee so it does not need to be imported explicitly alongside spaCy.
+- Added support for spaCy v3.5 for English, German and Polish.
 
 <a id="open-issues"></a>
 

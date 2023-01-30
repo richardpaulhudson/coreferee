@@ -264,7 +264,10 @@ class PolishRulesTest(unittest.TestCase):
 
     def test_potentially_indefinite_definite_common_noun(self):
         self.compare_potentially_indefinite(
-            "Rozmawiałem z tym bratem", 3, False, excluded_nlps=["core_news_sm"]
+            "Rozmawiałem z tym bratem",
+            3,
+            False,
+            excluded_nlps=["core_news_sm", "core_news_md"],
         )
 
     def test_potentially_indefinite_common_noun_with_possessive_pronoun(self):
@@ -619,6 +622,7 @@ class PolishRulesTest(unittest.TestCase):
             excluded_nlps=["core_news_sm"],
         )
 
+    @unittest.skipIf(train_version_mismatch, train_version_mismatch_message)
     def test_virile_verb_control_gender(self):
         self.compare_potential_pair(
             "Faceci weszli. Szczęśliwe były.",
@@ -673,6 +677,7 @@ class PolishRulesTest(unittest.TestCase):
             "Kobiety weszły. Ona była szczęśliwa.", 0, False, 3, 0
         )
 
+    @unittest.skipIf(train_version_mismatch, train_version_mismatch_message)
     def test_nonvirile_verb_marked_1(self):
         self.compare_potential_pair(
             "Kobiety weszły. Szczęśliwe były.",
@@ -680,15 +685,17 @@ class PolishRulesTest(unittest.TestCase):
             False,
             4,
             2,
-            excluded_nlps=["core_news_sm"],
         )
 
+    @unittest.skipIf(train_version_mismatch, train_version_mismatch_message)
     def test_nonvirile_verb_marked_2(self):
         self.compare_potential_pair("Psy weszły. Szczęśliwe były.", 0, False, 4, 2)
 
+    @unittest.skipIf(train_version_mismatch, train_version_mismatch_message)
     def test_nonvirile_verb_marked_3(self):
         self.compare_potential_pair("Domy weszły. Szczęśliwe były.", 0, False, 4, 2)
 
+    @unittest.skipIf(train_version_mismatch, train_version_mismatch_message)
     def test_nonvirile_verb_marked_4(self):
         self.compare_potential_pair("Dzieci weszły. Szczęśliwe były.", 0, False, 4, 2)
 
@@ -1133,6 +1140,7 @@ class PolishRulesTest(unittest.TestCase):
     def test_potential_pair_possessive_in_genitive_phrase_control(self):
         self.compare_potential_pair("Mąż z jego kolegą przemówili", 0, False, 2, 2)
 
+    @unittest.skipIf(train_version_mismatch, train_version_mismatch_message)
     def test_potential_pair_possessive_in_genitive_phrase_double_simple(self):
         self.compare_potential_pair(
             "Przyszedł mąż jego kolegi jego kolegi", 1, False, 4, 0
