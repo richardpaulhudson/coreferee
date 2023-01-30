@@ -496,7 +496,7 @@ Perhaps somewhat unusually, when a vector is required to represent a coordinated
 
 The structure shared by each of the five networks in the ensemble is shown in the attached diagram:
 
-![Structure of an ensemble member](https://github.com/explosion/coreferee/blob/master/docs/nn_structure.png)
+![Structure of an ensemble member](https://github.com/richardpaulhudson/coreferee/blob/master/docs/nn_structure.png)
 
 Training for all relevant spaCy models for a given language takes between one and two hours on a high-end laptop.
 
