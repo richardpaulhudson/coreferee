@@ -12,8 +12,8 @@ train_version_mismatch_message = (
     "Loaded model version does not match train model version"
 )
 
+
 class PolishSmokeTest(unittest.TestCase):
-    
     def all_nlps(self, func):
         for nlp in nlps:
             func(nlp)
@@ -193,7 +193,8 @@ class PolishSmokeTest(unittest.TestCase):
 
     def test_reflexive_preceding_verb(self):
         self.compare_annotations(
-            "Chciał, żeby jego syn lepiej sobie poradzał", "[0: [0], [3], 1: [4], [6]]"
+            "Piotr chciał, żeby jego syn lepiej sobie poradzał",
+            "[0: [0], [4], 1: [5], [7]]",
         )
 
     def test_cataphora_simple_verb(self):

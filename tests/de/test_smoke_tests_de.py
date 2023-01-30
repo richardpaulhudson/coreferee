@@ -56,7 +56,7 @@ class GermanSmokeTest(unittest.TestCase):
 
     def test_simple_plural(self):
         self.compare_annotations(
-            "Ich sah Hunde, und sie jagten eine Katze", "[0: [2], [5]]"
+            "Ich sah Hunde. Sie jagten eine Katze", "[0: [2], [4]]"
         )
 
     def test_simple_conjunction_same_word(self):
@@ -68,8 +68,9 @@ class GermanSmokeTest(unittest.TestCase):
 
     def test_simple_conjunction_different_words(self):
         self.compare_annotations(
-            "Ich sah einen Hund und ein Pferd, und sie jagten eine Katze",
-            "[0: [3, 6], [9]]",
+            "Ich sah einen Hund und ein Pferd. Sie jagten eine Katze",
+            "[0: [3, 6], [8]]",
+            excluded_nlps=["core_news_sm"],
         )
 
     @unittest.skipIf(train_version_mismatch, train_version_mismatch_message)

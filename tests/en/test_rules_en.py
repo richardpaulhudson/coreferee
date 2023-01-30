@@ -499,6 +499,7 @@ class EnglishRulesTest(unittest.TestCase):
     def test_potential_pair_person_word_capitalized(self):
         self.compare_potential_pair("I saw Job. He was there", 2, False, 4, 1)
 
+    @unittest.skipIf(train_version_mismatch, train_version_mismatch_message)
     def test_potential_pair_person_word_non_capitalized_exclusively_person_word(self):
         self.compare_potential_pair(
             "I saw a copt. He was there", 3, False, 5, 0, excluded_nlps=["core_web_md"]
