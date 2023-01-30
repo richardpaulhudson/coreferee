@@ -23,13 +23,6 @@ class TendenciesAnalyzer:
     ):
         self.rules_analyzer = rules_analyzer
         self.vectors_nlp = vectors_nlp
-        if self.vectors_nlp.vocab[rules_analyzer.random_word].has_vector:
-            self.vector_length = len(
-                self.vectors_nlp.vocab[rules_analyzer.random_word].vector
-            )
-        else:
-            self.vector_length = len(vectors_nlp(rules_analyzer.random_word)[0].vector)
-        assert self.vector_length > 0
         self.feature_table = feature_table
 
     def get_feature_map(

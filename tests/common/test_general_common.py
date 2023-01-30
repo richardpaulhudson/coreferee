@@ -1,5 +1,4 @@
 import unittest
-import os
 from multiprocessing import Process, Manager, Queue as m_Queue
 from queue import Queue
 from threading import Thread
@@ -10,7 +9,6 @@ from coreferee.test_utils import get_nlps
 
 NUMBER_OF_THREADS = 50
 NUMBER_OF_PROCESSES = 2
-
 
 class Worker:
     def listen(self, input_queue):
@@ -24,7 +22,7 @@ class Worker:
             output_queue.put((first, second, third, fourth, returned_number))
 
 
-class CommonUtilsTest(unittest.TestCase):
+class CommonGeneralTest(unittest.TestCase):
     def setUp(self):
         nlps = get_nlps("en")
         for nlp in (nlp for nlp in nlps if nlp.meta["name"] == "core_web_sm"):
