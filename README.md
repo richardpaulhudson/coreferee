@@ -72,7 +72,7 @@ Note that:
 Then open a Python prompt (type `python3` or `python` at the command line):
 
 ```
->>> import coreferee, spacy
+>>> import spacy
 >>> nlp = spacy.load('en_core_web_trf')
 >>> nlp.add_pipe('coreferee')
 <coreferee.manager.CorefereeBroker object at 0x000002DE8E9256D0>
@@ -110,7 +110,7 @@ Note that the required command may be `python` rather than `python3` on some ope
 Then open a Python prompt (type `python3` or `python` at the command line):
 
 ```
->>> import coreferee, spacy
+>>> import spacy
 >>> nlp = spacy.load('fr_core_news_lg')
 >>> nlp.add_pipe('coreferee')
 <coreferee.manager.CorefereeBroker object at 0x000001F556B4FF10>
@@ -148,7 +148,7 @@ Note that the required command may be `python` rather than `python3` on some ope
 Then open a Python prompt (type `python3` or `python` at the command line):
 
 ```
->>> import coreferee, spacy
+>>> import spacy
 >>> nlp = spacy.load('de_core_news_lg')
 >>> nlp.add_pipe('coreferee')
 <coreferee.manager.CorefereeBroker object at 0x0000026E84C63B50>
@@ -186,7 +186,7 @@ Note that the required command may be `python` rather than `python3` on some ope
 Then open a Python prompt (type `python3` or `python` at the command line):
 
 ```
->>> import coreferee, spacy
+>>> import spacy
 >>> nlp = spacy.load('pl_core_news_lg')
 >>> nlp.add_pipe('coreferee')
 <coreferee.manager.CorefereeBroker object at 0x0000027304C63B50>
