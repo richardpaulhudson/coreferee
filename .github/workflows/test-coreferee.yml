@@ -54,6 +54,9 @@ jobs:
         # see https://stackoverflow.com/questions/76313568/typeerror-issubclass-arg-1-must-be-a-class-when-importing-langchain-in-flask
         pip install "typing_extensions<=4.5.0"
 
+        # see https://stackoverflow.com/questions/75978880/spacy-python-package-no-longer-runs
+        pip uninstall pydantic && pip install pydantic
+
     - name: Install spaCy models
       run: |
         python -m spacy download en_core_web_sm
