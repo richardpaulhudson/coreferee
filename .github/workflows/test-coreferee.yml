@@ -98,6 +98,6 @@ jobs:
         python -m pytest tests/pl
 
     - name: Test Coreferee (French)
-      if: matrix.spacy_version == '3.1.0' ||  matrix.spacy_version == '3.2.0'
+      if: matrix.spacy_version == '3.1.7' ||  matrix.spacy_version == '3.2.6'
       run: |
         python -m pytest tests/fr
