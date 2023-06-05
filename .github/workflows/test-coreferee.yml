@@ -8,10 +8,22 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest, windows-latest, ubuntu-20.04]
-        python_version: ['3.6', '3.7', '3.8', '3.9', '3.10', '3.11.1']
+        python_version: ['3.6', '3.7', '3.8', '3.9', '3.10']
         spacy_version: ['3.3.3']
         click_version: ['8.0.1']
         include:
+          - os: 'ubuntu-20.04'
+            python-version: '3.11'
+            spacy_version: '3.5.3'
+            click_version: '8.0.1'
+          - os: 'macos-latest'
+            python-version: '3.11'
+            spacy_version: '3.5.3'
+            click_version: '8.0.1'
+          - os: 'windows-latest'
+            python-version: '3.11'
+            spacy_version: '3.5.3'
+            click_version: '8.0.1'
           - os: 'ubuntu-20.04'
             python-version: '3.10'
             spacy_version: '3.5.3'
