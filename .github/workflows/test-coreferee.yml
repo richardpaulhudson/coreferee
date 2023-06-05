@@ -51,6 +51,9 @@ jobs:
         pip uninstall click -y
         pip install "click==${{ matrix.click_version }}"
 
+        # see https://stackoverflow.com/questions/76313568/typeerror-issubclass-arg-1-must-be-a-class-when-importing-langchain-in-flask
+        pip install typing_extensions==4.5.0
+
     - name: Install spaCy models
       run: |
         python -m spacy download en_core_web_sm
