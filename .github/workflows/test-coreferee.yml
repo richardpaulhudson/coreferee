@@ -7,28 +7,28 @@ jobs:
   test-coreferee:
     strategy:
       matrix:
-        os: [macos-latest, windows-latest, ubuntu-20.04]
+        os: [macos-latest, windows-latest, ubuntu-latest]
         python_version: ['3.6', '3.7', '3.8', '3.9', '3.10', '3.11']
         spacy_version: ['3.3.3']
         click_version: ['8.0.1']
         include:
-          - os: 'ubuntu-20.04'
+          - os: 'ubuntu-latest'
             python-version: '3.10'
             spacy_version: '3.5.3'
             click_version: '8.0.1'
-          - os: 'ubuntu-20.04'
+          - os: 'ubuntu-latest'
             python-version: '3.10'
             spacy_version: '3.4.4'
             click_version: '8.0.1'
-          - os: 'ubuntu-20.04'
+          - os: 'ubuntu-latest'
             python-version: '3.10'
             spacy_version: '3.2.6'
             click_version: '8.0.1'
-          - os: 'ubuntu-20.04'
+          - os: 'ubuntu-latest'
             python-version: '3.10'
             spacy_version: '3.1.7'
             click_version: '7.1.2'
-          - os: 'ubuntu-20.04'
+          - os: 'ubuntu-latest'
             python-version: '3.10'
             spacy_version: '3.0.9'
             click_version: '7.1.2'
