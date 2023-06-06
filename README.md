@@ -33,6 +33,7 @@ Author: [Richard Paul Hudson](https://github.com/richardpaulhudson)
   - [6.8 Version 1.3.0](#version-130)
   - [6.9 Version 1.3.1](#version-131)
   - [6.10 Version 1.4.0](#version-140)
+  - [6.11 Version 1.4.1](#version-141)
 - [7. Open issues/requests for assistance](#open-issues)
 
 <a id="introduction"></a>
@@ -45,7 +46,7 @@ Author: [Richard Paul Hudson](https://github.com/richardpaulhudson)
 
 Coreferences are situations where two or more words within a text refer to the same entity, e.g. _**John** went home because **he** was tired_. Resolving coreferences is an important general task within the natural language processing field.
 
-Coreferee is a Python 3 library (tested with versions 3.6—3.10) that is used together with [spaCy](https://spacy.io/) (tested with versions 3.0.0—3.5.0) to resolve coreferences within English, French, German and Polish texts. It is designed so that it is easy to add support for new languages. It uses a mixture of neural networks and programmed rules.
+Coreferee is a Python 3 library (tested with versions 3.6—3.11) that is used together with [spaCy](https://spacy.io/) (tested with versions 3.0.0—3.5.0) to resolve coreferences within English, French, German and Polish texts. It is designed so that it is easy to add support for new languages. It uses a mixture of neural networks and programmed rules.
 
 The library was originally developed at [msg systems](https://www.msg.group/en) and was also maintained for a while at [Explosion AI](https://explosion.ai).
 
@@ -643,6 +644,12 @@ The initial open-source version.
 - Made it possible to package spaCy pipelines containing Coreferee.
 - Added an entry point for Coreferee so it does not need to be imported explicitly alongside spaCy.
 - Added support for spaCy v3.5 for English, German and Polish.
+
+<a id="version-141"></a>
+
+##### 6.11 Version 1.4.1
+
+- Added support for Python v3.11.
 
 <a id="open-issues"></a>
 
