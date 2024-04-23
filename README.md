@@ -9,6 +9,7 @@ Author: [Richard Paul Hudson](https://github.com/richardpaulhudson)
     - [1.2.2 French](#getting-started-fr)
     - [1.2.3 German](#getting-started-de)
     - [1.2.4 Polish](#getting-started-pl)
+    - [1.2.5 Russian](#getting-started-ru)
   - [1.3 Background information](#background-information)
   - [1.4 Facts and figures](#facts-and-figures)
     - [1.4.1 Covered relevant linguistic features](#covered-relevant-linguistic-features)
@@ -208,6 +209,43 @@ Then open a Python prompt (type `python3` or `python` at the command line):
 [Janek, żoną]
 >>>
 ```
+<a id="getting-started-ru"></a>
+
+##### 1.2.5 Russian
+
+Presuming you have already installed [spaCy](https://spacy.io/) and one of the Russian spacy models, install Coreferee from the command line by typing:
+
+```
+python3 -m pip install coreferee
+python3 -m coreferee install ru
+```
+
+Note that the required command may be `python` rather than `python3` on some operating systems.
+
+Then open a Python prompt (type `python3` or `python` at the command line):
+
+```
+>>> import coreferee, spacy
+>>> nlp = spacy.load('ru_core_news_lg')
+>>> nlp.add_pipe('coreferee')
+<coreferee.manager.CorefereeBroker object at 0x000001F061F61D30>
+>>>
+>>> doc = nlp('Хотя они добрались до их дома, Петр и Анна грустили. Он ушел спать. Она взяла свою любимую книгу, которую купила давно.')
+>>>
+>>> doc._.coref_chains.print()
+0: они(1), их(4), [Петр(7); Анна(9)]
+1: Петр(7), Он(12)
+2: Анна(9), Она(16), свою(18)
+3: книгу(20), которую(22)
+>>>
+>>> doc[9]._.coref_chains.print()
+0: они(1), их(4), [Петр(7); Анна(9)]
+2: Анна(9), Она(16), свою(18)
+>>>
+>>> doc._.coref_chains.resolve(doc[4])
+[Петр, Анна]
+>>>
+```
 
 <a id="background-information"></a>
 
@@ -262,8 +300,9 @@ Coreferee started life to assist the [Holmes](https://github.com/richardpaulhuds
   <tr><td align="center">en</td><td align="center">English</td><td align="center"><i><b>My friend</b> came in. <b>He</b> was happy.</i><td align="center">-</td><td align="center">-</td><td align="center">Three singular (natural genders) and one plural class.</td><td align="center"><i><b>Peter and Mary</b></i></td><td align="center">-</td></tr>
   <tr><td align="center">de</td><td align="center">German</td><td align="center"><i><b>Mein Freund</b> kam rein. <b>Er</b> war glücklich.</i><td align="center">-</td><td align="center"><i>Ich benutzte <b>das Auto</b> und hatte <b>damit</b> einige Probleme.</i></td><td align="center">Three singular (grammatical genders) and one plural class.</td><td align="center"><i><b>Peter und Maria</b></i></td><td align="center">-</td></tr>
   <tr><td align="center">fr</td><td align="center">French</td><td align="center"><i><b>Mon ami</b> entra. <b>Il</b> était heureux.</i><td align="center">-</td><td align="center">-</td><td align="center">Two singular (grammatical genders) and two plural (grammatical genders) classes.</td><td align="center"><i><b>Pierre et Marie</b></i></td><td align="center">-</td></tr>
-   <tr><td align="center">pl</td><td align="center">Polish</td><td align="center"><i>Wszedł <b>mój kolega</b>. Widzieliście, jaki <b>on</b> był szczęśliwy?</i><td align="center"><i>Wszedł <b>mój kolega</b>. Szczęśliwy <b>był</b>.<sup>1</sup></i></td><td align="center">-<sup>2</sup></td><td align="center">Three singular (grammatical genders) and two plural (natural genders) classes.</td><td align="center"><i><b>Piotr i Kasia</b></i></td><td align="center">1) <i><b>Piotr z Kasią</b> przyjechali do Warszawy</i>; <br>2)&nbsp;<i>Widziałem Piotra i <b>przyszli z Kasią</i></b></td></tr>
-  </table>
+  <tr><td align="center">pl</td><td align="center">Polish</td><td align="center"><i>Wszedł <b>mój kolega</b>. Widzieliście, jaki <b>on</b> był szczęśliwy?</i><td align="center"><i>Wszedł <b>mój kolega</b>. Szczęśliwy <b>był</b>.<sup>1</sup></i></td><td align="center">-<sup>2</sup></td><td align="center">Three singular (grammatical genders) and two plural (natural genders) classes.</td><td align="center"><i><b>Piotr i Kasia</b></i></td><td align="center">1) <i><b>Piotr z Kasią</b> przyjechali do Warszawy</i>; <br>2)&nbsp;<i>Widziałem Piotra i <b>przyszli z Kasią</i></b></td></tr>
+  <tr><td align="center">ru</td><td align="center">Russian</td><td align="center"><i> <b>Мой друг</b> пришел. <b>Он</b> был счастлив.</i><td align="center"><i>-</i></td><td align="center">-</td><td align="center">Three singular (grammatical genders) and one plural class.</td><td align="center"><i><b>Петр и Мария</b></i></td><td align="center"><i><b>Петр с Марией</b> </i></td></tr>
+</table>
 
 1. Only subject zero anaphors are covered. Object zero anaphors, e.g. <i>Wypiłeś <b>wodę</b>? Tak, <b>wypiłem.</b></i> are not in scope because they are mainly used colloquially and do not normally occur in the types of text for which [Coreferee is primarily designed](#background-information). Handling them would require creating or locating a detailed dictionary of verb valencies.
 
@@ -276,10 +315,11 @@ Coreferee started life to assist the [Holmes](https://github.com/richardpaulhuds
 <table style="text-align:center; vertical-align:middle">
   <tr><td rowspan="2">ISO 639-1</td><td rowspan="2">Language</td><td rowspan="2">Training corpora</td><td rowspan="2">Total words in training corpora</td><td colspan="2"><code>*_trf</code> models</td><td colspan="2"><code>*_lg</code> models</td><td colspan="2"><code>*_md</code> models</td><td colspan="2"><code>*_sm</code> models</td></tr>  
   <tr><td align="center">Anaphors in 20%</td><td align="center">Accuracy (%)</td><td align="center">Anaphors in 20%</td><td align="center">Accuracy (%)</td><td align="center">Anaphors in 20%</td><td align="center">Accuracy (%)</td><td align="center">Anaphors in 20%</td><td align="center">Accuracy (%)</td></tr>
-  <tr><td align="center">en</td><td align="center">English</td><td align="center"><a href="https://opus.nlpl.eu/ParCor/">ParCor</a>/<a href="https://github.com/dbamman/litbank"> LitBank</a></td><td align="center">393564</td><td align="center"><b>2500—2580</b></td><td align="center"><b>80—83</b><td align="center"><b>2480—2520</b></td><td align="center"><b>81—82</b></td></td><td align="center">2480—2510</td><td align="center">81-83</td><td align="center">2510—2560</td><td align="center">81—82</td></tr>
+  <tr><td align="center">en</td><td align="center">English</td><td align="center"><a href="https://opus.nlpl.eu/ParCor/">ParCor</a>/<a href="https://github.com/dbamman/litbank"> LitBank</a></td><td align="center">393564</td><td align="center"><b>2500—2580</b></td><td align="center"><b>80—83</b><td align="center"><b>2480—2520</b></td><td align="center"><b>81—82</b></td><td align="center">2480—2510</td><td align="center">81-83</td><td align="center">2510—2560</td><td align="center">81—82</td></tr>
   <tr><td align="center">de</td><td align="center">German</td><td align="center"><a href="https://opus.nlpl.eu/ParCor/">ParCor</a></td><td align="center">164300</td><td align="center">-</td><td align="center">-</td><td align="center"><b>530—570</b></td><td align="center"><b>79—80</b></td><td align="center">520—550</td><td align="center">76—80</td><td align="center">530—550</td><td align="center">76—79</td></tr>
   <tr><td align="center">fr</td><td align="center">French</td><td align="center"><a href="https://www.ortolang.fr/market/corpora/democrat/v1.1">DEMOCRAT</a></td><td align="center">323754</td><td align="center">-</td><td align="center">-</td><td align="center"><b>1270—1280</b></td><td align="center"><b>71—72</b></td><td align="center">1280—1300</td><td align="center">68—70</td><td align="center">1130—1140</td><td align="center">63—64</td></tr>
   <tr><td align="center">pl</td><td align="center">Polish</td><td align="center"><a href="http://zil.ipipan.waw.pl/PolishCoreferenceCorpus">PCC</a></td><td align="center">548268</td><td align="center">-</td><td align="center">-</td><td align="center"><b>1730—1790</b></td><td align="center"><b>72—76</b></td><td align="center">1740—1800</td><td align="center">70—75</td><td align="center">-</td><td align="center">-</td></tr>
+  <tr><td align="center">ru</td><td align="center">Russian</td><td align="center"><a href="https://github.com/posavinova/RuCoCo-RuCoref-dataset">RuCoref & RuCoCo</a></td><td align="center">1226212</td><td align="center">-</td><td align="center">-</td><td align="center">5700—8600</td><td align="center">76.43</td><td align="center">5700—8600</td><td align="center">74.58</td><td align="center"><b>5700—8600</b></td><td align="center"><b>76.85</b></td></tr>
 </table>
 
 Coreferee produces a range of neural-network models for each language corresponding to the various spaCy models for that language. The [neural network inputs](#the-neural-ensemble) include word vectors. With `_sm` (small) models, both spaCy and Coreferee use context-sensitive tensors as an alternative to word vectors. `_trf` (transformer-based) models, on the other hand, do not use or offer word vectors at all. To remedy this problem, the model configuration files (`config.cfg` in the directory for each language) allow a **vectors model** to be specified for use when a main model does not have its own vectors. Coreferee then combines the linguistic information generated by the main model with vector information returned for the individual words in each document by the vectors model.
