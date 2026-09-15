@@ -2,6 +2,8 @@
 
 Author: [Richard Paul Hudson](https://github.com/richardpaulhudson)
 
+*Current status*: Coreferee is maintained for compatibility with current spaCy releases. The current release supports Python 3.10–3.13 and spaCy 3.7–3.8, while retaining compatibility with selected earlier spaCy versions.
+
 - [1. Introduction](#introduction)
   - [1.1 The basic idea](#the-basic-idea)
   - [1.2 Getting started](#getting-started)
@@ -22,19 +24,21 @@ Author: [Richard Paul Hudson](https://github.com/richardpaulhudson)
   - [3.2 The neural ensemble](#the-neural-ensemble)
 - [4. Adding support for a new language](#adding-support-for-a-new-language)
 - [5. Adding support for a custom spaCy model](#adding-support-for-a-custom-spaCy-model)
-- [6. Version history]('#version-history')
-  - [6.1 Version 1.0.0](#version-100)
-  - [6.2 Version 1.0.1](#version-101)
-  - [6.3 Version 1.1.0](#version-110)
-  - [6.4 Version 1.1.1](#version-111)
-  - [6.5 Version 1.1.2](#version-112)
-  - [6.6 Version 1.1.3](#version-113)
-  - [6.7 Version 1.2.0](#version-120)
-  - [6.8 Version 1.3.0](#version-130)
-  - [6.9 Version 1.3.1](#version-131)
-  - [6.10 Version 1.4.0](#version-140)
-  - [6.11 Version 1.4.1](#version-141)
-- [7. Open issues/requests for assistance](#open-issues)
+- [6. Adding support for a new spaCy version](#adding-support-for-a-new-spacy-version)
+- [7. Version history](#version-history)
+  - [7.1 Version 1.0.0](#version-100)
+  - [7.2 Version 1.0.1](#version-101)
+  - [7.3 Version 1.1.0](#version-110)
+  - [7.4 Version 1.1.1](#version-111)
+  - [7.5 Version 1.1.2](#version-112)
+  - [7.6 Version 1.1.3](#version-113)
+  - [7.7 Version 1.2.0](#version-120)
+  - [7.8 Version 1.3.0](#version-130)
+  - [7.9 Version 1.3.1](#version-131)
+  - [7.10 Version 1.4.0](#version-140)
+  - [7.11 Version 1.4.1](#version-141)
+  - [7.12 Version 1.5.0](#version-150)
+- [8. Open issues/requests for assistance](#open-issues)
 
 <a id="introduction"></a>
 
@@ -46,7 +50,11 @@ Author: [Richard Paul Hudson](https://github.com/richardpaulhudson)
 
 Coreferences are situations where two or more words within a text refer to the same entity, e.g. _**John** went home because **he** was tired_. Resolving coreferences is an important general task within the natural language processing field.
 
-Coreferee is a Python 3 library (tested with versions 3.6—3.11) that is used together with [spaCy](https://spacy.io/) (tested with versions 3.0.0—3.5.0) to resolve coreferences within English, French, German and Polish texts. It is designed so that it is easy to add support for new languages. It uses a mixture of neural networks and programmed rules.
+Coreferee is a Python 3 library for resolving coreferences in English, French, German and Polish texts using spaCy. It is designed to work effectively with the relatively limited amounts of annotated coreference data available for many languages. Language-specific grammatical rules eliminate implausible antecedents, while a neural ensemble using spaCy's syntactic, morphological and vector representations ranks the remaining candidates. The architecture separates language-specific rules from the common inference machinery, making it straightforward to add support for further languages.
+
+Coreference decisions are made in the context of the emerging coreference chain rather than independently. When adding a new mention, the annotator checks compatibility with other members of the chain; if a later decision exposes an inconsistency, it can backtrack over recent assignments and try alternative antecedents.
+
+Coreferee is tested with Python versions 3.10—3.13 and [spaCy](https://spacy.io/) versions 3.2.0—3.8.16. Note that for size reasons the models shipped with Coreferee do not support all previous spaCy versions with all languages. If you want to use Coreferee with an older spaCy version that is not supported, please check out a tag for an appropriate previous Coreferee version (see [7. Version history](#version-history)).
 
 The library was originally developed at [msg systems](https://www.msg.group/en) and was also maintained for a while at [Explosion AI](https://explosion.ai).
 
@@ -98,6 +106,8 @@ Then open a Python prompt (type `python3` or `python` at the command line):
 <a id="getting-started-fr"></a>
 
 ##### 1.2.2 French
+
+**Please note the caveat under [Open issues](#open-issues): the behaviour for French could not be tested to the same standard as the behaviour for the other languages.**
 
 Presuming you have already installed [spaCy](https://spacy.io/) and one of the French spacy models, install Coreferee from the command line by typing:
 
@@ -237,7 +247,7 @@ With unlimited training data, it would be possible to train a system to employ a
 
 - Especially with limited training data but probably even with the largest available training datasets, it is unlikely that a system will learn more than the very simplest tendencies for strategy 3). However, making word vectors available to neural networks ensures that Coreferee can make use of whatever tendencies are discernable.
 
-Coreferee started life to assist the [Holmes](https://github.com/richardpaulhudson/holmes-extractor) project, which is used for information extraction and intelligent search. Coreferee is in no way dependent on Holmes, but this original aim has led to several design decisions that may seem somewhat atypical. Several of them could easily be altered by someone with a requirement to do so:
+Coreferee started life to assist the [Holmes](https://github.com/msg-systems/holmes-extractor) project, which is no longer maintained but which was used for information extraction and intelligent search. Coreferee is in no way dependent on Holmes, but this original aim led to several design decisions that may seem somewhat atypical. Several of them could easily be altered by someone with a requirement to do so:
 
 - A mention within Coreferee does not consist of a span, but rather of a single token or of a list of tokens that stand in a coordination relationship to one another.
 
@@ -247,11 +257,13 @@ Coreferee started life to assist the [Holmes](https://github.com/richardpaulhuds
 
 - Coreferee focusses heavily on anaphors (for English: pronouns). There is only relatively limited capture of coreference between noun phrases, and it is entirely rule-based. (In turn, however, this serves the aim of working with limited training data: noun-phrase coreference is a more exacting task than anaphor resolution.)
 
-- Because search performance is much more important for Holmes than document parsing performance, Coreferee performs all analysis eagerly as each document passes through the pipe.
+- Because search performance was much more important for Holmes than document parsing performance, Coreferee performs all analysis eagerly as each document passes through the pipe.
 
 <a id="facts-and-figures"></a>
 
 #### 1.4 Facts and figures
+
+**Note that the following tables capture the accuracies measured when Coreferee was first written and evaluated. Time constraints meant it was not possible to carry out extensive evaluations for later spaCy versions, where the accuracies may differ. Given the limited amount of annotated coreference data available at the time, the same held-out data was used during model tuning, including to determine when training should stop, and to report the final accuracy figures. These results should therefore be regarded as indicative rather than fully independent benchmark results.**
 
 <a id="covered-relevant-linguistic-features"></a>
 
@@ -276,8 +288,8 @@ Coreferee started life to assist the [Holmes](https://github.com/richardpaulhuds
 <table style="text-align:center; vertical-align:middle">
   <tr><td rowspan="2">ISO 639-1</td><td rowspan="2">Language</td><td rowspan="2">Training corpora</td><td rowspan="2">Total words in training corpora</td><td colspan="2"><code>*_trf</code> models</td><td colspan="2"><code>*_lg</code> models</td><td colspan="2"><code>*_md</code> models</td><td colspan="2"><code>*_sm</code> models</td></tr>  
   <tr><td align="center">Anaphors in 20%</td><td align="center">Accuracy (%)</td><td align="center">Anaphors in 20%</td><td align="center">Accuracy (%)</td><td align="center">Anaphors in 20%</td><td align="center">Accuracy (%)</td><td align="center">Anaphors in 20%</td><td align="center">Accuracy (%)</td></tr>
-  <tr><td align="center">en</td><td align="center">English</td><td align="center"><a href="https://opus.nlpl.eu/ParCor/">ParCor</a>/<a href="https://github.com/dbamman/litbank"> LitBank</a></td><td align="center">393564</td><td align="center"><b>2500—2580</b></td><td align="center"><b>80—83</b><td align="center"><b>2480—2520</b></td><td align="center"><b>81—82</b></td></td><td align="center">2480—2510</td><td align="center">81-83</td><td align="center">2510—2560</td><td align="center">81—82</td></tr>
-  <tr><td align="center">de</td><td align="center">German</td><td align="center"><a href="https://opus.nlpl.eu/ParCor/">ParCor</a></td><td align="center">164300</td><td align="center">-</td><td align="center">-</td><td align="center"><b>530—570</b></td><td align="center"><b>79—80</b></td><td align="center">520—550</td><td align="center">76—80</td><td align="center">530—550</td><td align="center">76—79</td></tr>
+  <tr><td align="center">en</td><td align="center">English</td><td align="center"><a href="https://opus.nlpl.eu/legacy/ParCor/">ParCor</a>/<a href="https://github.com/dbamman/litbank"> LitBank</a></td><td align="center">393564</td><td align="center"><b>2500—2580</b></td><td align="center"><b>80—83</b><td align="center"><b>2480—2520</b></td><td align="center"><b>81—82</b></td></td><td align="center">2480—2510</td><td align="center">81-83</td><td align="center">2510—2560</td><td align="center">81—82</td></tr>
+  <tr><td align="center">de</td><td align="center">German</td><td align="center"><a href="https://opus.nlpl.eu/legacy/ParCor/">ParCor</a></td><td align="center">164300</td><td align="center">-</td><td align="center">-</td><td align="center"><b>530—570</b></td><td align="center"><b>79—80</b></td><td align="center">520—550</td><td align="center">76—80</td><td align="center">530—550</td><td align="center">76—79</td></tr>
   <tr><td align="center">fr</td><td align="center">French</td><td align="center"><a href="https://www.ortolang.fr/market/corpora/democrat/v1.1">DEMOCRAT</a></td><td align="center">323754</td><td align="center">-</td><td align="center">-</td><td align="center"><b>1270—1280</b></td><td align="center"><b>71—72</b></td><td align="center">1280—1300</td><td align="center">68—70</td><td align="center">1130—1140</td><td align="center">63—64</td></tr>
   <tr><td align="center">pl</td><td align="center">Polish</td><td align="center"><a href="http://zil.ipipan.waw.pl/PolishCoreferenceCorpus">PCC</a></td><td align="center">548268</td><td align="center">-</td><td align="center">-</td><td align="center"><b>1730—1790</b></td><td align="center"><b>72—76</b></td><td align="center">1740—1800</td><td align="center">70—75</td><td align="center">-</td><td align="center">-</td></tr>
 </table>
@@ -285,8 +297,6 @@ Coreferee started life to assist the [Holmes](https://github.com/richardpaulhuds
 Coreferee produces a range of neural-network models for each language corresponding to the various spaCy models for that language. The [neural network inputs](#the-neural-ensemble) include word vectors. With `_sm` (small) models, both spaCy and Coreferee use context-sensitive tensors as an alternative to word vectors. `_trf` (transformer-based) models, on the other hand, do not use or offer word vectors at all. To remedy this problem, the model configuration files (`config.cfg` in the directory for each language) allow a **vectors model** to be specified for use when a main model does not have its own vectors. Coreferee then combines the linguistic information generated by the main model with vector information returned for the individual words in each document by the vectors model.
 
 Because the Coreferee models are rather large (20GB-30GB for the group of models for a given language) and because many users will only be interested in one language, the group of models for a given language is installed using `python3 -m coreferee install` as demonstrated in the introduction. All Coreferee models are more or less the same size; a larger spaCy model does not equate to a larger Coreferee model. As the figures above demonstrate, the accuracy of Coreferee corresponds closely to the size of the underlying spaCy model, and users are urged to use the larger spaCy models. It is in any case unclear whether there is a situation in which it would make sense to use Coreferee with an `_sm` model as the Coreferee model would then be considerably larger than the spaCy model! As this discrepancy is especially extreme for the Polish models, Coreferee no longer supports `pl_core_news_sm` from version 1.1.0 onwards.
-
-The English, German and Polish models support spaCy versions from 3.0.0 to 3.5.0, while the French models support spaCy versions from 3.1.0 to 3.2.0. Because the accuracies and number of anaphors found differ slightly depending on the spaCy version used, the table above cites ranges for each model.
 
 Assessing and comparing the precision and recall of anaphor resolution algorithms is notoriously difficult. For one thing, two human annotators of the same data will not always agree (and, indeed, there are some cases where Coreferee and a training annotator disagree where Coreferee's interpretation seems the more plausible!) And the same algorithm may perform with wildly different accuracies with different test documents depending on how clearly the documents are written and how often there are competing interpretations of individual anaphors.
 
@@ -568,25 +578,43 @@ The language-specific rules expect specific entity tags as 'magic values'. This 
 
 For many entity tags, the impact will be minimal if you cannot adhere to this, but what is crucial is that you use the `PERSON` and `PER` tags to refer to people in English and German respectively. If this is not possible, change the language-specific-rule code and reinstall Coreferee locally (`python -m pip install .` from the root directory).
 
+<a id="adding-support-for-a-new-spacy-version"></a>
+
+### 6. Adding support for a new spaCy version
+
+When a new minor spaCy release (e.g. 3.9) is supported, you need to: add config entries for the new spaCy **model** versions, train new Coreferee models with that spaCy version, and update tests so the new models are covered without locking in wrong behaviour.
+
+**High-level steps:**
+
+1. **Config** — In each language's `coreferee/lang/<lang>/config.cfg`, add a block per pipeline (sm, md, lg, trf if applicable) with `from_version`, `to_version`, and `train_version`. These refer to the **spaCy pipeline (model) version** (e.g. 3.8.0), not the spaCy library version. Use the latest pipeline versions published for that minor line.
+
+2. **Data** — Use the same training corpora as the [model performance table](#142-model-performance). Existing scripts (e.g. `sh/download_corpora.sh`) and [docs/TRAINING.md](docs/TRAINING.md) describe how to obtain and prepare them; no new data sources are required.
+
+3. **Training** — With the target spaCy version and all pipelines for that language installed, run the training command from the repository root (see [docs/TRAINING.md](docs/TRAINING.md)). Repeat per language and per minor version (e.g. 3.7 and 3.8) in a clean environment. Install the new models from the repo root with `python -m coreferee install <lang>`.
+
+4. **Tests** — Ensure the new model versions are loaded (config ranges), add or extend **conditional expected values** for the new versions where tests differ, and add snapshot branches for the common tendencies tests. Do not change expected values to match incorrect model output; treat wrong output as a regression to fix or document.
+
+5. **Regressions** — If the new pipeline produces linguistically wrong results, fix the cause (e.g. language rules or retraining) or document the limitation; do not adopt the wrong output as the new expected value. [docs/FR_REGression_Investigation.md](docs/FR_REGression_Investigation.md) illustrates the process.
+
 <a id="version-history"></a>
 
-#### 6 Version history
+#### 7 Version history
 
 <a id="version-100"></a>
 
-##### 6.1 Version 1.0.0
+##### 7.1 Version 1.0.0
 
 The initial open-source version.
 
 <a id="version-101"></a>
 
-##### 6.2 Version 1.0.1
+##### 7.2 Version 1.0.1
 
 - Fixing of a bug where already installed models were reinstalled from `site-packages` rather than the new model being pulled from GitHub.
 
 <a id="version-110"></a>
 
-##### 6.3 Version 1.1.0
+##### 7.3 Version 1.1.0
 
 - Upgrade to Python 3.9 and spaCy 3.1
 - Fixing of minor issues in all three rule-sets
@@ -595,7 +623,7 @@ The initial open-source version.
 
 <a id="version-111"></a>
 
-##### 6.4 Version 1.1.1
+##### 7.4 Version 1.1.1
 
 - Changed the dependencies to allow Coreferee to run on the Apple M1 chipset
 - Sorted out a problem with the supported spaCy versions
@@ -603,20 +631,20 @@ The initial open-source version.
 
 <a id="version-112"></a>
 
-##### 6.5 Version 1.1.2
+##### 7.5 Version 1.1.2
 
 - Added support for French, which was kindly supplied by [Pantalaymon](https://github.com/Pantalaymon)
 
 <a id="version-113"></a>
 
-##### 6.6 Version 1.1.3
+##### 7.6 Version 1.1.3
 
 - Updated French rules to new version, again supplied by [Pantalaymon](https://github.com/Pantalaymon)
 - Fixed an endless-loop problem in `language_independent_is_anaphoric_pair()`
 
 <a id="version-120"></a>
 
-##### 6.7 Version 1.2.0
+##### 7.7 Version 1.2.0
 
 - Removed dependencies to TensorFlow and Keras, switching to Thinc as the neural network platform. Switching to Thinc has led to serialized models that are around 30% of the size of the old models, and has also allowed the old limitation to be removed where `nlp.pipe()` could not be called with `n_process > 1` with forked processes.
 - Implemented a softmax layer to select the best potential referent for each anaphor as opposed to calculating independent scores for each pair.
@@ -627,19 +655,19 @@ The initial open-source version.
 
 <a id="version-130"></a>
 
-##### 6.8 Version 1.3.0
+##### 7.8 Version 1.3.0
 
 - Added support for spaCy v3.4 for English, German and Polish.
 
 <a id="version-131"></a>
 
-##### 6.9 Version 1.3.1
+##### 7.9 Version 1.3.1
 
 - Added support for the v3.4.1 English models.
 
 <a id="version-140"></a>
 
-##### 6.10 Version 1.4.0
+##### 7.10 Version 1.4.0
 
 - Made it possible to package spaCy pipelines containing Coreferee.
 - Added an entry point for Coreferee so it does not need to be imported explicitly alongside spaCy.
@@ -647,14 +675,34 @@ The initial open-source version.
 
 <a id="version-141"></a>
 
-##### 6.11 Version 1.4.1
+##### 7.11 Version 1.4.1
 
 - Added support for Python v3.11.
 
+<a id="version-150"></a>
+
+##### 7.12 Version 1.5.0
+
+- Changed Python version support to reflect the current range.
+- Added support for spaCy v3.7 and v3.8.
+- Added models for English, French, German, and Polish for spaCy v3.7/v3.8
+- Updated French language rules for spaCy v3.7/v3.8
+- See point 1 under [Open issues](#open-issues): the behaviour for French could not be tested as well as the behaviour for the other languages. 
+
+**Internal changes and fixes**
+
+- Added documentation and agent skills for adding support for new spaCy versions.
+- Added conditional use of `importlib.resources` instead of `pkg_resources` for Python >= 3.9.
+- Migrated package setup to `pyproject.toml`.
+- Fixed outdated URLs for training corpora.
+- Improved scripts for downloading corpora and converting French corpora to conll.
+
 <a id="open-issues"></a>
 
-### 7. Open issues / requests for assistance
+### 8. Open issues / requests for assistance
 
-1. Because optimising parsing speed was not a priority in the [project within which Coreferee came into being](#background-information), Coreferee is written purely in Python; it would be helpful if somebody could convert relevant parts of it to Cython.
+1. French support for spaCy 3.7 and 3.8 has received less extensive validation than the other supported languages. The original contributor of the French rules is no longer involved in the project, and the current maintainers do not have sufficient native-level linguistic knowledge to evaluate all behavioural changes introduced by newer spaCy models. Some version-specific tests have therefore been excluded where their expected linguistic behaviour could not be established with confidence. Contributions from French speakers with relevant linguistic or NLP expertise would be particularly welcome.
 
-2. It would be useful if somebody could find a way of benchmarking Coreferee against other coreference resolution solutions, especially for English. One problem this would probably present is that using a benchmark necessitates a normative scope where a system aims to find exactly those types of coreference marked within the benchmark corpus, whereas the scope of Coreferee was determined by project requirements.
+2. There are almost certainly changes to the inputs and structure of the neural ensemble that would lead to improvements in accuracy, both cross-linguistically and for specific languages. The only caveat to bear in mind when trying out changes is that it should be possible for someone who does not understand neural networks to write rules for a new language. This means that Coreferee should detect necessary differences in the neural network behaviour between languages automatically rather than requiring the trainer to configure them.
+
+3. It would be useful if somebody could find a way of benchmarking Coreferee against other coreference resolution solutions, especially for English. One problem this would probably present is that using a benchmark necessitates a normative scope where a system aims to find exactly those types of coreference marked within the benchmark corpus, whereas the scope of Coreferee was determined by project requirements.

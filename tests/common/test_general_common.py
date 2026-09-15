@@ -10,6 +10,7 @@ from coreferee.test_utils import get_nlps
 NUMBER_OF_THREADS = 50
 NUMBER_OF_PROCESSES = 2
 
+
 class Worker:
     def listen(self, input_queue):
         while True:
@@ -25,8 +26,15 @@ class Worker:
 class CommonGeneralTest(unittest.TestCase):
     def setUp(self):
         nlps = get_nlps("en")
+        self.sm_nlp = None
         for nlp in (nlp for nlp in nlps if nlp.meta["name"] == "core_web_sm"):
             self.sm_nlp = nlp
+            break
+        if self.sm_nlp is None:
+            self.skipTest(
+                "No en_core_web_sm model available for this spaCy version "
+                "(check lang/en/config.cfg from_version/to_version)."
+            )
 
     def test_serialization_with_scoring(self):
         doc = self.sm_nlp("Peter told Paul he was dissatisfied.")
@@ -182,7 +190,7 @@ class CommonGeneralTest(unittest.TestCase):
             input_queues[counter].put((output_queue, doc))
         returned_numbers = set()
         for counter in range(NUMBER_OF_PROCESSES):
-            (first, second, third, fourth, returned_number) = output_queue.get(True, 60)
+            first, second, third, fourth, returned_number = output_queue.get(True, 60)
             self.assertEqual("[0: [0], [3]]", first)
             self.assertEqual("[0: [0], [3]]", second)
             self.assertEqual("[]", third)

@@ -7,64 +7,31 @@ jobs:
   test-coreferee:
     strategy:
       matrix:
-        os: [macos-latest, windows-latest, ubuntu-20.04]
-        python_version: ['3.6', '3.7', '3.8', '3.9', '3.10']
-        spacy_version: ['3.3.3']
-        click_version: ['8.0.1']
+        os: [macos-latest, windows-latest, ubuntu-latest]
+        python_version: ['3.10', '3.11', '3.12', '3.13']
+        spacy_version: ['3.8.16']
+        click_version: ['8.5.0']
         include:
-          - os: 'ubuntu-20.04'
-            python_version: '3.11'
-            spacy_version: '3.5.3'
-            click_version: '8.0.1'
-          - os: 'macos-latest'
-            python_version: '3.11'
-            spacy_version: '3.5.3'
-            click_version: '8.0.1'
-          - os: 'windows-latest'
-            python_version: '3.11'
-            spacy_version: '3.5.3'
-            click_version: '8.0.1'
-          - os: 'ubuntu-20.04'
+          - os: 'ubuntu-latest'
             python_version: '3.10'
-            spacy_version: '3.5.3'
-            click_version: '8.0.1'
-          - os: 'ubuntu-20.04'
-            python_version: '3.10'
-            spacy_version: '3.4.4'
-            click_version: '8.0.1'
-          - os: 'ubuntu-20.04'
-            python_version: '3.10'
-            spacy_version: '3.2.6'
-            click_version: '8.0.1'
-          - os: 'ubuntu-20.04'
-            python_version: '3.10'
-            spacy_version: '3.1.7'
-            click_version: '7.1.2'
-          - os: 'ubuntu-20.04'
-            python_version: '3.10'
-            spacy_version: '3.0.9'
-            click_version: '7.1.2'
+            spacy_version: '3.7.5'
+            click_version: '8.1.8'
     runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout repository code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Initialize Python
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python_version }}
         
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install spacy==${{ matrix.spacy_version }} pytest
-        
-        # see https://github.com/explosion/spaCy/issues/10564
-        pip uninstall click -y
-        pip install "click==${{ matrix.click_version }}"
-
-        # see https://stackoverflow.com/questions/76313568/typeerror-issubclass-arg-1-must-be-a-class-when-importing-langchain-in-flask
-        pip install "typing_extensions<=4.5.0"
+        python -m pip install spacy==${{ matrix.spacy_version }} pytest
+        python -m pip install click==${{ matrix.click_version }}
+        python -m pip check
 
     - name: Install spaCy models
       run: |
@@ -80,7 +47,7 @@ jobs:
         python -m spacy download fr_core_news_lg
         python -m spacy download pl_core_news_md
         python -m spacy download pl_core_news_lg
-        
+
     - name: Install Coreferee
       run: |
         cd ${{ github.workspace }}
@@ -90,14 +57,10 @@ jobs:
         python -m coreferee install fr
         python -m coreferee install pl
 
-    - name: Test Coreferee (except French)
+    - name: Test Coreferee
       run: |
         python -m pytest tests/common
         python -m pytest tests/en
         python -m pytest tests/de
-        python -m pytest tests/pl
-
-    - name: Test Coreferee (French)
-      if: matrix.spacy_version == '3.1.7' ||  matrix.spacy_version == '3.2.6'
-      run: |
         python -m pytest tests/fr
+        python -m pytest tests/pl

@@ -7,6 +7,7 @@ from pytest import skip
 import spacy
 from spacy.cli.package import package
 
+
 class CommonPackagingTest(unittest.TestCase):
 
     def test_model_packaging(self):
@@ -23,7 +24,12 @@ class CommonPackagingTest(unittest.TestCase):
             versioned_model_name = listdir(output_dir)[0]
             chdir(
                 sep.join(
-                    (output_dir, versioned_model_name, "en_core_web_lg", versioned_model_name)
+                    (
+                        output_dir,
+                        versioned_model_name,
+                        "en_core_web_lg",
+                        versioned_model_name,
+                    )
                 )
             )
             nlp2 = spacy.load(".")

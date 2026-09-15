@@ -1,4 +1,4 @@
-from typing import List, Dict, Set, cast
+from typing import List, Dict, Set
 from xml.sax import make_parser
 from xml.sax.handler import ContentHandler, feature_namespaces
 import os
@@ -465,38 +465,53 @@ class ConllLoader(GenericLoader):
                         index += 1
                 this_part_split_conll_lines = corrected_this_part_split_conll_lines
             conll_tokens = [l[3].lstrip("/") for l in this_part_split_conll_lines]
-            doc = nlp(" ".join(conll_tokens))
+            text = " ".join(conll_tokens)
+            doc = nlp(text)
             rules_analyzer.initialize(doc)
-            conll_to_spacy_lookup = (
-                []
-            )  # indexes correspond to conll token indexes, entries are lists of spaCy tokens
-            spacy_token_iterator = enumerate(token for token in doc)
+            # Align CONLL token indices to spaCy token indices by character offsets.
+            # Each CONLL token has a [start, end) range in text; find spaCy tokens overlapping it.
+            conll_to_spacy_lookup: List[List[int]] = []
+            char_pos = 0
             for conll_token in conll_tokens:
-                this_conll_token_lookup = []
-                while len(conll_token) > 0:
-                    spacy_token_index, spacy_token = next(
-                        spacy_token_iterator, (None, None)
-                    )
-                    if spacy_token_index is None:
-                        break
-                    spacy_token = cast(Token, spacy_token)
-                    if not conll_token.startswith(spacy_token.text):
-                        break
-                    if spacy_token.pos_ == "SPACE":
+                start = char_pos
+                end = char_pos + len(conll_token)
+                char_pos = end + 1  # space after token
+                overlapping = []
+                for spacy_i, spacy_tok in enumerate(doc):
+                    if spacy_tok.pos_ == "SPACE":
                         continue
-                    this_conll_token_lookup.append(spacy_token_index)
-                    conll_token = conll_token[len(spacy_token) :]
-                conll_to_spacy_lookup.append(this_conll_token_lookup)
+                    tok_start = spacy_tok.idx
+                    tok_end = spacy_tok.idx + len(spacy_tok.text)
+                    if tok_start < end and tok_end > start:
+                        overlapping.append(spacy_i)
+                conll_to_spacy_lookup.append(overlapping)
             working_spans = (
                 {}
             )  # // from chain index numbers to spaCy start token indexes
             chains: Dict[
                 str, List[Span]
             ] = {}  # from chain index numbers to lists of spaCy spans
+            skipped_tokenization_mismatch = 0
             for conll_token_index, chain_markers in enumerate(
                 l[-1] for l in this_part_split_conll_lines
             ):
                 if chain_markers in ("-", "_"):
+                    continue
+                if (
+                    conll_token_index >= len(conll_to_spacy_lookup)
+                    or not conll_to_spacy_lookup[conll_token_index]
+                ):
+                    skipped_tokenization_mismatch += 1
+                    token_text = this_part_split_conll_lines[conll_token_index][3] if conll_token_index < len(this_part_split_conll_lines) else "?"
+                    print(
+                        "  Warning: CONLL/spaCy alignment failed (no overlapping tokens) for token index",
+                        conll_token_index,
+                        "text=%r in" % token_text,
+                        conll_filename.name,
+                        "(part",
+                        part_id,
+                        ")",
+                    )
                     continue
                 for chain_marker in chain_markers.split("|"):
                     chain_index = "".join([d for d in chain_marker if d.isdigit()])
@@ -567,6 +582,16 @@ class ConllLoader(GenericLoader):
                                 if mention == working_referent:
                                     mention.true_in_training = True
                                     continue
+            if skipped_tokenization_mismatch > 0:
+                print(
+                    "  Warning: skipped",
+                    skipped_tokenization_mismatch,
+                    "token(s) with CONLL/spaCy tokenization mismatch in",
+                    conll_filename.name,
+                    "(part",
+                    part_id,
+                    ")",
+                )
             docs.append(doc)
         return docs
 

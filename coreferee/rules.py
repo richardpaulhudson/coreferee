@@ -1,10 +1,9 @@
 from typing import List, Tuple, Dict
 import importlib
 import sys
-from os import sep
 from abc import ABC, abstractmethod
 from threading import Lock
-import pkg_resources
+from ._resources import resource_listdir, resource_path
 from spacy.language import Language
 from spacy.tokens import Token, Doc
 from .data_model import ChainHolder, Mention
@@ -17,15 +16,13 @@ class RulesAnalyzerFactory:
     @staticmethod
     def get_rules_analyzer(nlp: Language) -> "RulesAnalyzer":
         def read_in_data_files(directory: str, rules_analyzer: RulesAnalyzer) -> None:
-            for data_filename in (
-                filename
-                for filename in pkg_resources.resource_listdir(
-                    __name__, sep.join(("lang", directory, "data"))
-                )
-                if filename.endswith(".dat")
+            for data_filename in resource_listdir(
+                "coreferee", "lang", directory, "data"
             ):
-                full_data_filename = pkg_resources.resource_filename(
-                    __name__, sep.join(("lang", directory, "data", data_filename))
+                if not data_filename.endswith(".dat"):
+                    continue
+                full_data_filename = resource_path(
+                    "coreferee", "lang", directory, "data", data_filename
                 )
                 with open(full_data_filename, "r", encoding="utf-8") as file:
                     setattr(

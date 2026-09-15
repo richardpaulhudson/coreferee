@@ -1,7 +1,6 @@
 from typing import List
-from os import sep
 from threading import Lock
-import pkg_resources
+from ._resources import resource_exists, resource_path
 from packaging import version
 import spacy
 from spacy.language import Language
@@ -38,16 +37,15 @@ def get_nlps(language_name: str, *, add_coreferee: bool = True) -> List[Language
     required."""
     with lock:
         if language_name not in language_to_nlps:
-            relative_config_filename = sep.join(("lang", language_name, "config.cfg"))
-            if not pkg_resources.resource_exists("coreferee", relative_config_filename):
+            if not resource_exists("coreferee", "lang", language_name, "config.cfg"):
                 raise LanguageNotSupportedError(language_name)
-            absolute_config_filename = pkg_resources.resource_filename(
-                __name__, relative_config_filename
+            absolute_config_filename = resource_path(
+                "coreferee", "lang", language_name, "config.cfg"
             )
             config = Config().from_disk(absolute_config_filename)
             nlps = []
             for config_entry in config:
-                
+
                 nlp = spacy.load(
                     "_".join((language_name, config[config_entry]["model"]))
                 )

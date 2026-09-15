@@ -1,6 +1,68 @@
+[project]
+name = "coreferee"
+version = "1.5.0"
+description = "Coreference resolution for English, French, German and Polish, optimised for limited training data and easily extensible for further languages"
+readme = {file = "SHORTREADME.md", content-type = "text/markdown"}
+requires-python = ">=3.10,<3.14"
+license = "MIT"
+authors = [
+    {name = "Richard Paul Hudson", email = "hudsonrichardpaul@gmail.com"}
+]
+keywords = [
+    "nlp",
+    "spacy",
+    "spacy-extension",
+    "python",
+    "machine-learning",
+    "coreference",
+    "anaphora",
+    "coreference-resolution",
+    "anaphora-resolution",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Other Audience",
+    "Intended Audience :: Education",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Science/Research",
+    "Natural Language :: English",
+    "Natural Language :: French",
+    "Natural Language :: German",
+    "Natural Language :: Polish",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Text Processing :: Linguistic",
+]
+dependencies = [
+    "spacy>=3.2.0,<3.9.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/richardpaulhudson/coreferee"
+
+[project.entry-points."spacy_factories"]
+coreferee = "coreferee.manager:CorefereeBroker"
+
 [build-system]
 requires = [
     "setuptools",
     "wheel"
 ]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = {find = {}}
+include-package-data = true
+
+[tool.setuptools.package-data]
+"*" = ["*.dat", "*.cfg"]
+
+[tool.uv.workspace]
+members = [
+    "sh/conversion_conll",
+]

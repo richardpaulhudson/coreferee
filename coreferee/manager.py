@@ -8,7 +8,7 @@ from sys import exc_info
 from numpy import absolute
 from packaging import version
 import spacy
-import pkg_resources
+from ._resources import resource_exists, resource_path
 from wasabi import Printer  # type: ignore[import]
 from spacy.language import Language
 from spacy.tokens import Doc, Token
@@ -35,8 +35,7 @@ class CorefereeManager:
     @staticmethod
     def get_annotator(nlp: Language) -> Annotator:
         model_name = "_".join((nlp.meta["lang"], nlp.meta["name"]))
-        relative_config_filename = os.sep.join(("lang", nlp.meta["lang"], "config.cfg"))
-        if not pkg_resources.resource_exists(__name__, relative_config_filename):
+        if not resource_exists("coreferee", "lang", nlp.meta["lang"], "config.cfg"):
             msg = Printer()
             msg.fail(
                 "".join(
@@ -48,8 +47,8 @@ class CorefereeManager:
                 )
             )
             raise LanguageNotSupportedError(nlp.meta["lang"])
-        absolute_config_filename = pkg_resources.resource_filename(
-            __name__, relative_config_filename
+        absolute_config_filename = resource_path(
+            "coreferee", "lang", nlp.meta["lang"], "config.cfg"
         )
         config = Config().from_disk(absolute_config_filename)
         for config_entry_name, config_entry in config.items():
@@ -195,12 +194,12 @@ def get_annotator(
         )
         msg.fail(error_msg)
         raise ModelNotSupportedError(error_msg)
-    this_feature_table_filename = pkg_resources.resource_filename(
+    this_feature_table_filename = resource_path(
         model_package_name, FEATURE_TABLE_FILENAME
     )
     with open(this_feature_table_filename, "rb") as feature_table_file:
         feature_table = pickle.load(feature_table_file)
-    absolute_thinc_model_filename = pkg_resources.resource_filename(
+    absolute_thinc_model_filename = resource_path(
         model_package_name, THINC_MODEL_FILENAME
     )
     if not os.path.isfile(absolute_thinc_model_filename):

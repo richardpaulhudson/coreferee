@@ -28,7 +28,7 @@ class EnglishSmokeTest(unittest.TestCase):
         expected_coref_chains,
         *,
         excluded_nlps=[],
-        alternative_expected_coref_chains=None
+        alternative_expected_coref_chains=None,
     ):
         def func(nlp):
 

@@ -104,11 +104,20 @@ celerybeat.pid
 # Environments
 .env
 .venv
+.venv-test
 env/
 venv/
 ENV/
 env.bak/
 venv.bak/
+
+# Local data
+.corpora
+.spacy-cache
+.training-logs
+
+# Jetbrains
+.idea
 
 # Spyder project settings
 .spyderproject

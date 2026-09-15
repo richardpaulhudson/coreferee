@@ -1,7 +1,7 @@
 import argparse
 import os
 import sys
-import pkg_resources
+from ._resources import resource_path
 from spacy.util import run_command
 from .training.train import TrainingManager
 from .manager import COMMON_MODELS_PACKAGE_NAMEPART
@@ -102,7 +102,7 @@ elif args.command == "check":
         train_not_check=False,
     ).check_models()
 elif args.command == "install":
-    file_system_root = pkg_resources.resource_filename(__name__, "")
+    file_system_root = resource_path("coreferee")
     models_dirname = "".join(
         (file_system_root, os.sep, "..", os.sep, "models", os.sep, args.lang)
     )

@@ -67,7 +67,7 @@ class CommonRulesTest(unittest.TestCase):
         expected_governing_sibling,
         expected_has_or_coordination,
         *,
-        excluded_nlps=[]
+        excluded_nlps=[],
     ):
         def func(nlp):
 
@@ -210,7 +210,7 @@ class CommonRulesTest(unittest.TestCase):
         referring_index,
         expected_truth,
         *,
-        excluded_nlps=[]
+        excluded_nlps=[],
     ):
         def func(nlp):
             if nlp.meta["name"] in excluded_nlps:
@@ -343,7 +343,7 @@ class CommonRulesTest(unittest.TestCase):
         expected_truth,
         consider_syntax=True,
         *,
-        excluded_nlps=[]
+        excluded_nlps=[],
     ):
         def func(nlp):
 

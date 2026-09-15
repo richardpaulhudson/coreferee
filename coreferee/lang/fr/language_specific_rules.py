@@ -153,8 +153,11 @@ class LanguageSpecificRulesAnalyzer(RulesAnalyzer):
             coordinator = False
             if recursed_token.lemma_ in self.or_lemmas:
                 token._.coref_chains.temp_has_or_coordination = True
+            # Only add as sibling if same nominal/verbal category as root (avoids
+            # spaCy 3.7/3.8 parse regressions where verb is attached as conj).
             if recursed_token.dep_ in self.dependent_sibling_deps:
-                siblings_set.add(recursed_token)
+                if token.pos_ not in self.noun_pos or recursed_token.pos_ in self.noun_pos:
+                    siblings_set.add(recursed_token)
             for child in (
                 child
                 for child in recursed_token.children
@@ -179,7 +182,68 @@ class LanguageSpecificRulesAnalyzer(RulesAnalyzer):
             and token.dep_ not in self.dependent_sibling_deps
         ):
             siblings_set, coordinator = add_siblings_recursively(token, set())
-            if coordinator:
+            # Supplement for lg 3.7/3.8 parse variants where coordination is
+            # attached differently from the standard conj→first-conjunct chain.
+            if token.pos_ in self.noun_pos:
+                # Case A: ROOT noun has verb conj children whose nsubj is the
+                # second conjunct (e.g. "Richard ou Christine rentre").
+                if token.dep_ == self.root_dep:
+                    for child in token.children:
+                        if (
+                            child.dep_ in self.dependent_sibling_deps
+                            and child.pos_ in self.clause_root_pos
+                            and any(c.dep_ == "cc" for c in child.children)
+                        ):
+                            coordinator = True
+                            for gc in child.children:
+                                if (
+                                    gc.pos_ in self.noun_pos
+                                    and gc.dep_ in ("nsubj", "nsubj:pass")
+                                ):
+                                    siblings_set.add(gc)
+                                if (
+                                    gc.dep_ == "cc"
+                                    and gc.lemma_ in self.or_lemmas
+                                ):
+                                    token._.coref_chains.temp_has_or_coordination = (
+                                        True
+                                    )
+                # Case B: noun under a verb, with another noun as conj of
+                # that verb + a cc child (e.g. lg parses "un homme et une
+                # femme" with femme conj→verb instead of conj→homme).
+                # Only match when the cc sits between token and conj noun
+                # with no nouns or verbs intervening (avoids matching
+                # clause-level coordination like "NP VP et NP VP").
+                if (
+                    not siblings_set
+                    and token.head.pos_ in self.clause_root_pos
+                ):
+                    doc = token.doc
+                    verb_head = token.head
+                    blocking_pos = self.noun_pos + self.clause_root_pos
+                    for c in verb_head.children:
+                        if (
+                            c != token
+                            and c.pos_ in self.noun_pos
+                            and c.dep_ == "conj"
+                        ):
+                            cc_children = [
+                                gc for gc in c.children if gc.dep_ == "cc"
+                            ]
+                            for cc in cc_children:
+                                lo = min(token.i, c.i) + 1
+                                hi = max(token.i, c.i)
+                                if lo <= cc.i < hi and not any(
+                                    doc[j].pos_ in blocking_pos
+                                    for j in range(lo, cc.i)
+                                ):
+                                    coordinator = True
+                                    siblings_set.add(c)
+                                    if cc.lemma_ in self.or_lemmas:
+                                        token._.coref_chains.temp_has_or_coordination = (
+                                            True
+                                        )
+            if coordinator and siblings_set:
                 return sorted(siblings_set)  # type:ignore[type-var]
         return []
 
@@ -242,15 +306,19 @@ class LanguageSpecificRulesAnalyzer(RulesAnalyzer):
     def is_potential_anaphor(self, token: Token) -> bool:
         if not self.french_word.match(token.text):
             return False
-        # Ce dernier, cette dernière...
-        if (
-            token.lemma_ == "dernier"
-            and any(
-                self.has_morph(child, "PronType", "Dem") for child in token.children
-            )
-            and token.dep_ not in ("amod", "appos")
-        ):
-            return True
+        # Ce dernier, cette dernière... (morph PronType=Dem on child, or fallback
+        # for 3.7/3.8 models that may tag "dernier" as amod rather than nsubj).
+        if token.lemma_.lower() in ("dernier", "dernière"):
+            if any(
+                self.has_morph(child, "PronType", "Dem")
+                for child in token.children
+            ):
+                return True
+            if (
+                token.i > 0
+                and token.nbor(-1).lower_ in ("ce", "cet", "cette", "ces")
+            ):
+                return True
         if self.is_emphatic_reflexive_anaphor(token):
             return True
         if token.lemma_ in {"celui", "celle"}:
@@ -278,10 +346,18 @@ class LanguageSpecificRulesAnalyzer(RulesAnalyzer):
                 and (
                     self.has_morph(token, "Person", "3")
                     or self.has_morph(token, "PronType", "Dem")
+                    or token.text.lower() == "lui"
                 )
             )
             or (token.pos_ == "ADV" and token.lemma_ in {"ici", "là"})
-            or (token.pos_ == "DET" and self.has_morph(token, "Poss", "Yes"))
+            or (
+                token.pos_ == "DET"
+                and (
+                    self.has_morph(token, "Poss", "Yes")
+                    or token.lemma_.lower() == "leur"
+                    or token.text.lower() == "leur"
+                )
+            )
         ):
             return False
         if (
@@ -495,6 +571,9 @@ class LanguageSpecificRulesAnalyzer(RulesAnalyzer):
                 sing = plur = True
             if not any([fem, masc]):
                 fem = masc = True
+            # Force "leur" to plural-only for agreement (3.7/3.8 morph/lemma may be wrong).
+            if token.lemma_.lower() == "leur" or token.text.lower() == "leur":
+                plur, sing = True, False
         return masc, fem, sing, plur
 
     def refers_to_person(self, token) -> bool:
@@ -521,7 +600,11 @@ class LanguageSpecificRulesAnalyzer(RulesAnalyzer):
 
         if token.dep_ in ("nsubj", "nsubj:pass"):
             verb_lemma = token.head.lemma_
-            if verb_lemma[-1] == "e" and verb_lemma[-2] != "r":
+            if (
+                len(verb_lemma) >= 2
+                and verb_lemma[-1] == "e"
+                and verb_lemma[-2] != "r"
+            ):
                 # first group verbs that are not lemmatised correctly
                 verb_lemma = verb_lemma + "r"
             if (
@@ -735,8 +818,18 @@ class LanguageSpecificRulesAnalyzer(RulesAnalyzer):
                 and self.is_reflexive_anaphor(referring) == 0
                 and not self.has_morph(referred_root, "Poss", "Yes")
                 and referred_root.dep_ != "obl:mod"
+                and not (
+                    referring.dep_ == "obl:arg"
+                    and any(c.dep_ == "case" for c in referring.children)
+                    and (
+                        referred_root._.coref_chains.temp_governing_sibling is None
+                        or referred_root.i
+                        < referred_root._.coref_chains.temp_governing_sibling.i
+                    )
+                )
             ):
                 # * Les hommes le voyaient. "le" can't refer to "hommes"
+                # "avec lui" (obl:arg + case) with 1st conjunct: allow; 2nd conjunct: disallow
                 return 0
 
             if self.is_potential_reflexive_pair(referred, referring) == 0 and (
@@ -850,7 +943,7 @@ class LanguageSpecificRulesAnalyzer(RulesAnalyzer):
         if referring._.coref_chains.temp_governing_sibling is not None:
             referring = referring._.coref_chains.temp_governing_sibling
 
-        if referred_root.dep_ in ("nsubj", "nsubj:pass") and not any(
+        if referred_root.dep_ in ("nsubj", "nsubj:pass", self.root_dep) and not any(
             selon
             for selon in referring.children
             if selon.lemma_ == "selon" and selon.dep_ == "case"
@@ -861,6 +954,13 @@ class LanguageSpecificRulesAnalyzer(RulesAnalyzer):
                 if referring_ancestor.dep_ in self.disjointed_dep:
                     return False
                 if referred_root in referring_ancestor.children:
+                    return True
+                # lg 3.7/3.8: ROOT noun as subject, verb is conj of noun
+                if (
+                    referring_ancestor.dep_ in self.dependent_sibling_deps
+                    and referring_ancestor.head == referred_root
+                    and referred_root.pos_ in self.noun_pos
+                ):
                     return True
                 # Relative clauses
                 if (
@@ -912,6 +1012,21 @@ class LanguageSpecificRulesAnalyzer(RulesAnalyzer):
             return False
         if self.is_potential_anaphor(referred_root):
             return False
+
+        # Fallback for lg 3.7/3.8 where the ROOT clause carries a
+        # subordination marker (mark dep), making it semantically subordinate
+        # despite being ROOT.  The referred noun may then sit under a
+        # parataxis or advcl child of that root.
+        referring_clause_root = referring
+        for ancestor in referring.ancestors:
+            referring_clause_root = ancestor
+        if any(c.dep_ == "mark" for c in referring_clause_root.children):
+            for ancestor in referred_root.ancestors:
+                if (
+                    ancestor.dep_ in ("parataxis",) + self.adverbial_clause_deps
+                    and ancestor.head == referring_clause_root
+                ):
+                    return True
 
         referred_verb_ancestors = []
         # Find the ancestors of the referent that are verbs, stopping anywhere where there
